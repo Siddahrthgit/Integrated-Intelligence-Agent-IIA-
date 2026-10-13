@@ -1,0 +1,11 @@
+.env
+.env.*
+!.env.example
+node_modules/
+.vscode/
+.DS_Store
+.next/
+uploads/
+dist/
+coverage/
+*.log

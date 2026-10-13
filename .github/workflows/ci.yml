@@ -1,0 +1,77 @@
+name: CI
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Test backend persistence and build backend
+        run: npm --workspace @smart-quiz/server run test
+      - name: Build frontend
+        run: npm --workspace @smart-quiz/web run build
+      - name: Build single-container image
+        run: docker build -t iia-ci .
+      - name: Smoke-test container and API proxy
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run -d --name iia-ci -p 3000:3000 \
+            -e NODE_ENV=production \
+            -e JWT_SECRET="ci-only-secret-not-for-production-0123456789abcdef" \
+            -e UPLOADS_DIR=/tmp/iia-uploads \
+            -e DATA_FILE=/tmp/iia-data/store.json \
+            iia-ci
+          cleanup() {
+            docker logs iia-ci || true
+            docker rm -f iia-ci >/dev/null 2>&1 || true
+          }
+          trap cleanup EXIT
+          for attempt in $(seq 1 40); do
+            if curl --fail --silent http://127.0.0.1:3000/api/health >/tmp/iia-health.json; then
+              break
+            fi
+            sleep 2
+          done
+          cat /tmp/iia-health.json
+          grep -q '"ok":true' /tmp/iia-health.json
+          docker exec iia-ci sh -lc 'command -v pdftoppm && command -v tesseract'
+          curl --fail --silent http://127.0.0.1:3000/ >/tmp/iia-home.html
+          grep -q 'IIA study workspace' /tmp/iia-home.html
+
+          AUTH_RESPONSE=$(curl --fail --silent -X POST http://127.0.0.1:3000/api/auth/signup \
+            -H 'content-type: application/json' \
+            --data '{"name":"CI User","email":"ci-user@example.test","password":"ci-only-password-123"}')
+          TOKEN=$(printf '%s' "$AUTH_RESPONSE" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>process.stdout.write(JSON.parse(s).token || ""))')
+          test -n "$TOKEN"
+          curl --fail --silent http://127.0.0.1:3000/api/auth/me \
+            -H "authorization: Bearer $TOKEN" >/tmp/iia-me.json
+          grep -q 'ci-user@example.test' /tmp/iia-me.json
+
+          NO_KEY_CHAT_STATUS=$(curl --silent --show-error -o /tmp/iia-no-key-chat.json -w "%{http_code}" \
+            -X POST http://127.0.0.1:3000/api/chat \
+            -H "authorization: Bearer $TOKEN" -H 'content-type: application/json' \
+            --data '{"message":"check missing provider configuration","taskMode":true}')
+          test "$NO_KEY_CHAT_STATUS" = "503"
+
+          UNAUTH_CHAT_STATUS=$(curl --silent --show-error -o /tmp/iia-unauth-chat.json -w "%{http_code}" \
+            -X POST http://127.0.0.1:3000/api/chat \
+            -H 'content-type: application/json' --data '{"message":"this should be blocked"}')
+          test "$UNAUTH_CHAT_STATUS" = "401"
+
+          UNAUTH_UPLOAD_STATUS=$(curl --silent --show-error -o /tmp/iia-unauth-upload.json -w "%{http_code}" \
+            -X POST http://127.0.0.1:3000/api/uploads)
+          test "$UNAUTH_UPLOAD_STATUS" = "401"
