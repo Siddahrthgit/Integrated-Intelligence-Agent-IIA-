@@ -1,0 +1,15 @@
+{
+  "name": "smart-quiz",
+  "private": true,
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "dev:web": "npm --workspace @smart-quiz/web run dev",
+    "dev:server": "npm --workspace @smart-quiz/server run dev",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:web\"",
+    "build:server": "npm --workspace @smart-quiz/server run build",
+    "build:web": "npm --workspace @smart-quiz/web run build",
+    "build": "npm run build:server && npm run build:web",
+    "start": "node scripts/start.cjs"
+  },
+  "devDependencies": {"concurrently": "^8.0.0", "typescript": "^5.5.0"}
+}
