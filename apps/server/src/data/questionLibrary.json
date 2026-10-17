@@ -1,0 +1,927 @@
+{
+  "civil": {
+    "nec": [
+      {
+        "id": "nec-p1",
+        "question": "For a simply supported beam carrying a central point load, where is the maximum bending moment located?",
+        "options": [
+          "At the supports",
+          "At midspan",
+          "At one-quarter span",
+          "Uniformly throughout"
+        ],
+        "correctAnswer": "At midspan",
+        "topic": "Structural Mechanics",
+        "source": "Derived from the uploaded 2021–2025 repeatability analysis; not an official NEC question."
+      },
+      {
+        "id": "nec-p2",
+        "question": "For a principal plane, the shear stress is:",
+        "options": [
+          "Maximum",
+          "Zero",
+          "Equal to normal stress",
+          "Always negative"
+        ],
+        "correctAnswer": "Zero",
+        "topic": "Structural Mechanics",
+        "source": "Derived from the uploaded 2021–2025 repeatability analysis; not an official NEC question."
+      },
+      {
+        "id": "nec-p3",
+        "question": "Degree of consolidation is commonly expressed as:",
+        "options": [
+          "Final settlement / initial settlement",
+          "Settlement at time t / final primary consolidation settlement",
+          "Pore pressure / total stress",
+          "Dry density / wet density"
+        ],
+        "correctAnswer": "Settlement at time t / final primary consolidation settlement",
+        "topic": "Soil Mechanics",
+        "source": "Derived from the uploaded 2021–2025 repeatability analysis; not an official NEC question."
+      },
+      {
+        "id": "nec-p4",
+        "question": "An overconsolidated soil has previously experienced:",
+        "options": [
+          "A lower effective stress than its current value",
+          "A greater effective stress than its current value",
+          "No effective stress",
+          "Only atmospheric pressure"
+        ],
+        "correctAnswer": "A greater effective stress than its current value",
+        "topic": "Soil Mechanics",
+        "source": "Derived from the uploaded 2021–2025 repeatability analysis; not an official NEC question."
+      },
+      {
+        "id": "nec-p5",
+        "question": "Compaction of soil primarily involves the removal of:",
+        "options": [
+          "Water",
+          "Air",
+          "Soil particles",
+          "Mineral matter"
+        ],
+        "correctAnswer": "Air",
+        "topic": "Soil Mechanics",
+        "source": "Derived from the uploaded 2021–2025 repeatability analysis; not an official NEC question."
+      },
+      {
+        "id": "nec-p6",
+        "question": "A piston sampler is particularly associated with sampling:",
+        "options": [
+          "Very hard rock",
+          "Very soft or sensitive cohesive soils",
+          "Dry gravel only",
+          "Steel specimens"
+        ],
+        "correctAnswer": "Very soft or sensitive cohesive soils",
+        "topic": "Soil Mechanics",
+        "source": "Derived from the uploaded 2021–2025 repeatability analysis; not an official NEC question."
+      },
+      {
+        "id": "nec-p7",
+        "question": "Hydrostatic pressure at depth h in water is given by:",
+        "options": [
+          "p = ρgh",
+          "p = ρg/h",
+          "p = gh/ρ",
+          "p = ρh/g"
+        ],
+        "correctAnswer": "p = ρgh",
+        "topic": "Hydraulics",
+        "source": "Derived from the uploaded 2021–2025 repeatability analysis; not an official NEC question."
+      },
+      {
+        "id": "nec-p8",
+        "question": "Reynolds number in pipe flow depends on:",
+        "options": [
+          "Diameter, velocity and viscosity",
+          "Only pipe length",
+          "Only pressure",
+          "Only roughness"
+        ],
+        "correctAnswer": "Diameter, velocity and viscosity",
+        "topic": "Hydraulics",
+        "source": "Derived from the uploaded 2021–2025 repeatability analysis; not an official NEC question."
+      },
+      {
+        "id": "nec-p9",
+        "question": "The Manning equation is commonly used to estimate:",
+        "options": [
+          "Open-channel velocity or discharge",
+          "Concrete strength",
+          "Soil consolidation time",
+          "Bearing capacity only"
+        ],
+        "correctAnswer": "Open-channel velocity or discharge",
+        "topic": "Hydraulics",
+        "source": "Derived from the uploaded 2021–2025 repeatability analysis; not an official NEC question."
+      },
+      {
+        "id": "nec-p10",
+        "question": "The main purpose of a surge tank is to:",
+        "options": [
+          "Increase cement strength",
+          "Mitigate pressure transients in a pressure conduit",
+          "Measure soil density",
+          "Remove hardness from water"
+        ],
+        "correctAnswer": "Mitigate pressure transients in a pressure conduit",
+        "topic": "Hydropower",
+        "source": "Derived from the uploaded 2021–2025 repeatability analysis; not an official NEC question."
+      },
+      {
+        "id": "nec-p11",
+        "question": "A flow-duration curve is useful for assessing:",
+        "options": [
+          "Flow availability and hydropower potential",
+          "Concrete cover",
+          "Brick absorption only",
+          "Survey bearing only"
+        ],
+        "correctAnswer": "Flow availability and hydropower potential",
+        "topic": "Hydropower",
+        "source": "Derived from the uploaded 2021–2025 repeatability analysis; not an official NEC question."
+      },
+      {
+        "id": "nec-p12",
+        "question": "CBR is primarily used in evaluating:",
+        "options": [
+          "Pavement subgrade strength",
+          "Cement setting time",
+          "Water hardness",
+          "Beam deflection"
+        ],
+        "correctAnswer": "Pavement subgrade strength",
+        "topic": "Transportation",
+        "source": "Derived from the uploaded 2021–2025 repeatability analysis; not an official NEC question."
+      },
+      {
+        "id": "nec-p13",
+        "question": "The bitumen penetration test is used to determine:",
+        "options": [
+          "Consistency of bitumen",
+          "Concrete compressive strength",
+          "Soil permeability",
+          "Steel yield stress"
+        ],
+        "correctAnswer": "Consistency of bitumen",
+        "topic": "Transportation",
+        "source": "Derived from the uploaded 2021–2025 repeatability analysis; not an official NEC question."
+      },
+      {
+        "id": "nec-p14",
+        "question": "BOD and COD are commonly associated with:",
+        "options": [
+          "Water and wastewater quality",
+          "Beam stability",
+          "Surveying bearings",
+          "Bitumen penetration"
+        ],
+        "correctAnswer": "Water and wastewater quality",
+        "topic": "Water & Sanitation",
+        "source": "Derived from the uploaded 2021–2025 repeatability analysis; not an official NEC question."
+      },
+      {
+        "id": "nec-p15",
+        "question": "In PERT, the expected activity time is based on:",
+        "options": [
+          "Optimistic, most likely and pessimistic times",
+          "Only optimistic time",
+          "Only pessimistic time",
+          "Only average project cost"
+        ],
+        "correctAnswer": "Optimistic, most likely and pessimistic times",
+        "topic": "Project Management",
+        "source": "Derived from the uploaded 2021–2025 repeatability analysis; not an official NEC question."
+      },
+      {
+        "id": "nec-p16",
+        "question": "Optimum moisture content on a compaction curve corresponds to approximately:",
+        "options": [
+          "Maximum dry density",
+          "Minimum dry density",
+          "Zero air content always",
+          "Maximum water content"
+        ],
+        "correctAnswer": "Maximum dry density",
+        "topic": "Soil Mechanics",
+        "source": "Derived from the uploaded 2021–2025 repeatability analysis; not an official NEC question."
+      },
+      {
+        "id": "nec-p17",
+        "question": "In a simply supported beam with a central point load, the bending moment diagram is:",
+        "options": [
+          "Triangular",
+          "Parabolic",
+          "Circular",
+          "Constant"
+        ],
+        "correctAnswer": "Triangular",
+        "topic": "Structural Mechanics",
+        "source": "Derived from the uploaded 2021–2025 repeatability analysis; not an official NEC question."
+      },
+      {
+        "id": "nec-p18",
+        "question": "The Chezy equation is associated with:",
+        "options": [
+          "Open-channel flow",
+          "Soil compaction",
+          "Concrete mix design",
+          "PERT scheduling"
+        ],
+        "correctAnswer": "Open-channel flow",
+        "topic": "Hydraulics",
+        "source": "Derived from the uploaded 2021–2025 repeatability analysis; not an official NEC question."
+      },
+      {
+        "id": "nec-p19",
+        "question": "A canal crossing arrangement is classified using terms such as:",
+        "options": [
+          "Aqueduct and superpassage",
+          "Mohr circle and SFD",
+          "CBR and OMC",
+          "CPM and PERT"
+        ],
+        "correctAnswer": "Aqueduct and superpassage",
+        "topic": "Irrigation",
+        "source": "Derived from the uploaded 2021–2025 repeatability analysis; not an official NEC question."
+      },
+      {
+        "id": "nec-p20",
+        "question": "Mohr-circle relations are used to determine:",
+        "options": [
+          "Principal stresses and maximum shear stress",
+          "Only cement setting time",
+          "Only pipe discharge",
+          "Only project duration"
+        ],
+        "correctAnswer": "Principal stresses and maximum shear stress",
+        "topic": "Structural Mechanics",
+        "source": "Derived from the uploaded 2021–2025 repeatability analysis; not an official NEC question."
+      }
+    ],
+    "loksewa": [
+      {
+        "id": "lok-p1",
+        "question": "The main purpose of a BOQ is to:",
+        "options": [
+          "Estimate quantities and costs",
+          "Determine rainfall",
+          "Classify soil only",
+          "Design circuits"
+        ],
+        "correctAnswer": "Estimate quantities and costs",
+        "topic": "Estimation & Costing",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "lok-p2",
+        "question": "Which test determines compressive strength of concrete?",
+        "options": [
+          "Slump test",
+          "Compression test",
+          "Sieve analysis",
+          "Atterberg limits"
+        ],
+        "correctAnswer": "Compression test",
+        "topic": "Concrete",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "lok-p3",
+        "question": "The unit weight of water is approximately:",
+        "options": [
+          "9.81 kN/m3",
+          "1 kN/m3",
+          "98.1 kN/m3",
+          "0.981 kN/m3"
+        ],
+        "correctAnswer": "9.81 kN/m3",
+        "topic": "Hydraulics",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "lok-p4",
+        "question": "A contour line joins points having equal:",
+        "options": [
+          "Elevation",
+          "Bearing",
+          "Slope",
+          "Distance"
+        ],
+        "correctAnswer": "Elevation",
+        "topic": "Surveying",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "lok-p5",
+        "question": "The Standard Penetration Test is mainly used in:",
+        "options": [
+          "Soil investigation",
+          "Concrete curing",
+          "Bitumen testing",
+          "Steel testing"
+        ],
+        "correctAnswer": "Soil investigation",
+        "topic": "Soil Mechanics",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "lok-p6",
+        "question": "The critical path in a project is the path with the:",
+        "options": [
+          "Longest total duration",
+          "Shortest duration",
+          "Lowest cost",
+          "Most activities"
+        ],
+        "correctAnswer": "Longest total duration",
+        "topic": "Project Management",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "lok-p7",
+        "question": "Nominal concrete cover mainly helps to:",
+        "options": [
+          "Protect reinforcement",
+          "Increase absorption",
+          "Reduce cement",
+          "Replace stirrups"
+        ],
+        "correctAnswer": "Protect reinforcement",
+        "topic": "RCC",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "lok-p8",
+        "question": "A benchmark in surveying is a point of known:",
+        "options": [
+          "Reduced level",
+          "Concrete grade",
+          "Bearing capacity",
+          "Discharge"
+        ],
+        "correctAnswer": "Reduced level",
+        "topic": "Surveying",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "lok-p9",
+        "question": "The primary purpose of curing concrete is to:",
+        "options": [
+          "Maintain moisture for hydration",
+          "Remove all water",
+          "Increase aggregate size",
+          "Reduce reinforcement"
+        ],
+        "correctAnswer": "Maintain moisture for hydration",
+        "topic": "Concrete",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "lok-p10",
+        "question": "Hydraulic radius is defined as:",
+        "options": [
+          "Area/wetted perimeter",
+          "Perimeter/area",
+          "Area x perimeter",
+          "Depth/width"
+        ],
+        "correctAnswer": "Area/wetted perimeter",
+        "topic": "Hydraulics",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      }
+    ],
+    "rcc": [
+      {
+        "id": "rcc-p1",
+        "question": "Characteristic compressive strength of concrete is designated by:",
+        "options": [
+          "fck",
+          "fy",
+          "Es",
+          "Ec"
+        ],
+        "correctAnswer": "fck",
+        "topic": "RCC",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "rcc-p2",
+        "question": "Longitudinal tension reinforcement in a beam mainly resists:",
+        "options": [
+          "Tension from bending",
+          "Water pressure",
+          "Shear only",
+          "Shrinkage only"
+        ],
+        "correctAnswer": "Tension from bending",
+        "topic": "RCC",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "rcc-p3",
+        "question": "Stirrups in an RCC beam primarily resist:",
+        "options": [
+          "Shear",
+          "Axial compression only",
+          "Temperature only",
+          "Dead load only"
+        ],
+        "correctAnswer": "Shear",
+        "topic": "RCC",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "rcc-p4",
+        "question": "A one-way slab spans predominantly in:",
+        "options": [
+          "One direction",
+          "Two directions equally",
+          "No direction",
+          "Four directions"
+        ],
+        "correctAnswer": "One direction",
+        "topic": "RCC",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "rcc-p5",
+        "question": "Effective depth of a beam is measured to the:",
+        "options": [
+          "Centroid of tension steel",
+          "Bottom of formwork",
+          "Top of stirrup",
+          "Neutral axis"
+        ],
+        "correctAnswer": "Centroid of tension steel",
+        "topic": "RCC",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "rcc-p6",
+        "question": "Development length mainly ensures:",
+        "options": [
+          "Adequate bond",
+          "Higher absorption",
+          "Lower density",
+          "Zero deflection"
+        ],
+        "correctAnswer": "Adequate bond",
+        "topic": "RCC",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "rcc-p7",
+        "question": "An under-reinforced beam is designed so that:",
+        "options": [
+          "Steel yields before concrete failure",
+          "Concrete fails first",
+          "Neither reaches design stress",
+          "Only stirrups yield"
+        ],
+        "correctAnswer": "Steel yields before concrete failure",
+        "topic": "RCC",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "rcc-p8",
+        "question": "At the neutral axis in bending, longitudinal strain is:",
+        "options": [
+          "Zero",
+          "Maximum",
+          "Always compressive",
+          "Always tensile"
+        ],
+        "correctAnswer": "Zero",
+        "topic": "RCC",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "rcc-p9",
+        "question": "A column carrying axial load and bending is called a:",
+        "options": [
+          "Beam-column",
+          "One-way slab",
+          "Footing",
+          "Retaining wall"
+        ],
+        "correctAnswer": "Beam-column",
+        "topic": "RCC",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "rcc-p10",
+        "question": "A footing primarily transfers column load to the:",
+        "options": [
+          "Soil",
+          "Roof slab",
+          "Staircase",
+          "Parapet"
+        ],
+        "correctAnswer": "Soil",
+        "topic": "Foundation",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      }
+    ],
+    "soil-foundation": [
+      {
+        "id": "soil-p1",
+        "question": "Liquid limit and plastic limit are:",
+        "options": [
+          "Atterberg limits",
+          "Concrete tests",
+          "Bitumen tests",
+          "Hydraulic tests"
+        ],
+        "correctAnswer": "Atterberg limits",
+        "topic": "Soil Mechanics",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "soil-p2",
+        "question": "Darcy's law is commonly applied to:",
+        "options": [
+          "Flow through porous soil",
+          "Beam bending",
+          "Concrete compression",
+          "Traffic flow"
+        ],
+        "correctAnswer": "Flow through porous soil",
+        "topic": "Soil Mechanics",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "soil-p3",
+        "question": "Effective stress is approximately:",
+        "options": [
+          "Total stress minus pore pressure",
+          "Total stress plus pore pressure",
+          "Pore pressure minus total stress",
+          "Dry density only"
+        ],
+        "correctAnswer": "Total stress minus pore pressure",
+        "topic": "Soil Mechanics",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "soil-p4",
+        "question": "Well-graded soil contains:",
+        "options": [
+          "Wide range of particle sizes",
+          "Only clay",
+          "One particle size",
+          "Only organic matter"
+        ],
+        "correctAnswer": "Wide range of particle sizes",
+        "topic": "Soil Mechanics",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "soil-p5",
+        "question": "Standard Proctor test determines:",
+        "options": [
+          "OMC and maximum dry density",
+          "Bearing capacity directly",
+          "Liquid limit only",
+          "Permeability only"
+        ],
+        "correctAnswer": "OMC and maximum dry density",
+        "topic": "Soil Compaction",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "soil-p6",
+        "question": "Terzaghi's bearing capacity theory is used mainly for:",
+        "options": [
+          "Shallow foundations",
+          "Pipe friction",
+          "Concrete mix",
+          "Traffic volume"
+        ],
+        "correctAnswer": "Shallow foundations",
+        "topic": "Foundation Engineering",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "soil-p7",
+        "question": "Consolidation settlement is especially important for:",
+        "options": [
+          "Saturated compressible fine soil",
+          "Solid rock",
+          "Dry steel",
+          "Bitumen"
+        ],
+        "correctAnswer": "Saturated compressible fine soil",
+        "topic": "Soil Mechanics",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "soil-p8",
+        "question": "A raft foundation can be useful when:",
+        "options": [
+          "Columns are closely spaced or soil capacity is low",
+          "Only one light column exists",
+          "No soil exists",
+          "Only water is present"
+        ],
+        "correctAnswer": "Columns are closely spaced or soil capacity is low",
+        "topic": "Foundation Engineering",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "soil-p9",
+        "question": "Angle of internal friction is a shear-strength parameter of:",
+        "options": [
+          "Soil",
+          "Concrete only",
+          "Steel only",
+          "Water only"
+        ],
+        "correctAnswer": "Soil",
+        "topic": "Soil Mechanics",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "soil-p10",
+        "question": "CBR is primarily used to evaluate:",
+        "options": [
+          "Pavement subgrade strength",
+          "Concrete slump",
+          "River discharge",
+          "Foundation depth"
+        ],
+        "correctAnswer": "Pavement subgrade strength",
+        "topic": "Geotechnical Engineering",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      }
+    ],
+    "hydraulics": [
+      {
+        "id": "hyd-p1",
+        "question": "The continuity equation expresses conservation of:",
+        "options": [
+          "Mass",
+          "Energy only",
+          "Momentum only",
+          "Temperature"
+        ],
+        "correctAnswer": "Mass",
+        "topic": "Fluid Mechanics",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "hyd-p2",
+        "question": "Bernoulli's equation includes pressure head, velocity head and:",
+        "options": [
+          "Elevation head",
+          "Concrete cover",
+          "Soil plasticity",
+          "Traffic density"
+        ],
+        "correctAnswer": "Elevation head",
+        "topic": "Fluid Mechanics",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "hyd-p3",
+        "question": "A Venturi meter measures:",
+        "options": [
+          "Flow discharge",
+          "Soil density",
+          "Concrete strength",
+          "Rainfall"
+        ],
+        "correctAnswer": "Flow discharge",
+        "topic": "Hydraulics",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "hyd-p4",
+        "question": "Froude number is important in classifying:",
+        "options": [
+          "Open-channel flow",
+          "Concrete grades",
+          "Soil minerals",
+          "Road aggregates"
+        ],
+        "correctAnswer": "Open-channel flow",
+        "topic": "Open Channel Flow",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "hyd-p5",
+        "question": "A hydraulic jump changes flow from:",
+        "options": [
+          "Supercritical to subcritical",
+          "Subcritical to supercritical",
+          "Laminar to solid",
+          "Pipe to groundwater"
+        ],
+        "correctAnswer": "Supercritical to subcritical",
+        "topic": "Open Channel Flow",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "hyd-p6",
+        "question": "A weir is commonly used to measure:",
+        "options": [
+          "Open-channel discharge",
+          "Concrete cover",
+          "Soil cohesion",
+          "Road roughness"
+        ],
+        "correctAnswer": "Open-channel discharge",
+        "topic": "Hydraulics",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "hyd-p7",
+        "question": "Water hammer is caused by:",
+        "options": [
+          "Rapid velocity change in a closed conduit",
+          "Evaporation",
+          "Soil compaction",
+          "Concrete curing"
+        ],
+        "correctAnswer": "Rapid velocity change in a closed conduit",
+        "topic": "Water Hammer",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "hyd-p8",
+        "question": "A spillway is provided to:",
+        "options": [
+          "Safely release excess reservoir water",
+          "Increase soil density",
+          "Measure traffic",
+          "Mix concrete"
+        ],
+        "correctAnswer": "Safely release excess reservoir water",
+        "topic": "Hydraulic Structures",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "hyd-p9",
+        "question": "Evaporation from a reservoir is a loss of:",
+        "options": [
+          "Water",
+          "Cement",
+          "Soil",
+          "Steel"
+        ],
+        "correctAnswer": "Water",
+        "topic": "Water Resources",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "hyd-p10",
+        "question": "A hydrograph shows stream:",
+        "options": [
+          "Discharge versus time",
+          "Pressure versus depth",
+          "Soil density versus depth",
+          "Elevation only"
+        ],
+        "correctAnswer": "Discharge versus time",
+        "topic": "Hydrology",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      }
+    ],
+    "transportation-surveying": [
+      {
+        "id": "ts-p1",
+        "question": "The main purpose of road camber is to:",
+        "options": [
+          "Drain surface water",
+          "Increase vehicle weight",
+          "Reduce road width",
+          "Measure speed"
+        ],
+        "correctAnswer": "Drain surface water",
+        "topic": "Highway Engineering",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "ts-p2",
+        "question": "Superelevation is provided mainly to:",
+        "options": [
+          "Counteract lateral acceleration",
+          "Increase road length",
+          "Reduce drainage",
+          "Measure thickness"
+        ],
+        "correctAnswer": "Counteract lateral acceleration",
+        "topic": "Highway Engineering",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "ts-p3",
+        "question": "Stopping sight distance depends on speed, reaction time and:",
+        "options": [
+          "Braking characteristics",
+          "Cement grade",
+          "Soil color",
+          "Chain length"
+        ],
+        "correctAnswer": "Braking characteristics",
+        "topic": "Highway Engineering",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "ts-p4",
+        "question": "Los Angeles abrasion test evaluates aggregate:",
+        "options": [
+          "Abrasion and impact resistance",
+          "Water absorption only",
+          "Setting time",
+          "Soil permeability"
+        ],
+        "correctAnswer": "Abrasion and impact resistance",
+        "topic": "Highway Materials",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "ts-p5",
+        "question": "A total station electronically measures angles and:",
+        "options": [
+          "Distances",
+          "Concrete strength",
+          "Water pressure",
+          "Soil moisture"
+        ],
+        "correctAnswer": "Distances",
+        "topic": "Surveying",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "ts-p6",
+        "question": "A backsight in leveling is generally taken on a point of:",
+        "options": [
+          "Known reduced level",
+          "Unknown traffic volume",
+          "Maximum slope",
+          "Zero elevation"
+        ],
+        "correctAnswer": "Known reduced level",
+        "topic": "Surveying",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "ts-p7",
+        "question": "A theodolite is primarily used to measure:",
+        "options": [
+          "Horizontal and vertical angles",
+          "Concrete strength",
+          "River discharge",
+          "Soil permeability"
+        ],
+        "correctAnswer": "Horizontal and vertical angles",
+        "topic": "Surveying",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "ts-p8",
+        "question": "The pavement sub-base mainly provides:",
+        "options": [
+          "Structural support and load distribution",
+          "Road paint",
+          "Traffic measurement",
+          "All drainage"
+        ],
+        "correctAnswer": "Structural support and load distribution",
+        "topic": "Highway Engineering",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "ts-p9",
+        "question": "Bitumen viscosity describes its:",
+        "options": [
+          "Resistance to flow",
+          "Aggregate size",
+          "Soil plasticity",
+          "Concrete cover"
+        ],
+        "correctAnswer": "Resistance to flow",
+        "topic": "Highway Materials",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      },
+      {
+        "id": "ts-p10",
+        "question": "A transition curve is provided between:",
+        "options": [
+          "A straight and circular curve",
+          "Two buildings",
+          "Two soil layers",
+          "Bridge and culvert"
+        ],
+        "correctAnswer": "A straight and circular curve",
+        "topic": "Highway Engineering",
+        "source": "Derived practice question; not an official NEC/Loksewa past question."
+      }
+    ]
+  },
+  "message": "Question-bank slots contain clearly labeled derived practice where supplied. Do not represent these as official NEC/Loksewa past questions."
+}
