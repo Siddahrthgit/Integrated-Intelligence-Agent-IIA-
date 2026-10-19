@@ -9,7 +9,9 @@ import quizRoutes from "./routes/quiz.routes";
 import resultRoutes from "./routes/result.routes";
 import uploadRoutes from "./routes/upload.routes";
 import chatRoutes from "./routes/chat.routes";
-import studyToolsRoutes from "./routes/study-tools.routes";\nimport developerRoutes from "./routes/developer.routes";\nimport v1Routes from "./routes/v1.routes";
+import studyToolsRoutes from "./routes/study-tools.routes";
+import developerRoutes from "./routes/developer.routes";
+import v1Routes from "./routes/v1.routes";
 
 dotenv.config();
 
@@ -34,7 +36,9 @@ app.use("/api/quiz", quizRoutes);
 app.use("/api/results", resultRoutes);
 app.use("/api/uploads", uploadRoutes);
 app.use("/api/chat", chatRoutes);
-app.use("/api/study-tools", studyToolsRoutes);\napp.use("/api/developer", developerRoutes);\napp.use("/api/v1", v1Routes);
+app.use("/api/study-tools", studyToolsRoutes);
+app.use("/api/developer", developerRoutes);
+app.use("/api/v1", v1Routes);
 
 app.get("/api/health", (_req, res) => {
   res.json({ ok: true, message: "Smart Quiz API is running" });
