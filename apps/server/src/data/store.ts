@@ -100,7 +100,7 @@ export function revokeApiKeyForUser(id: string, ownerUserId: string) {
   key.revokedAt = new Date().toISOString(); saveStore(); return true;
 }
 export function rotateApiKeyForUser(id: string, ownerUserId: string, credentials: { keyHash: string; prefix: string }) {
-  const previous = apiKeys.find((item) => item.id === id && item.ownerUserId === ownerUserId && !item.revokedAt && new Date(item.expiresAt).getTime() > Date.now());
+  const previous = apiKeys.find((item) => item.id === id && item.ownerUserId === ownerUserId && !item.revokedAt);
   if (!previous) return undefined;
   previous.revokedAt = new Date().toISOString();
   const now = new Date();
