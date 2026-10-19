@@ -25,7 +25,7 @@ test("application records survive reloading the store module", (t) => {
     prefix: "iia_live_test",
   });
   assert.equal(store.listApiKeysForUser(user.id)[0].keyHash, undefined);
-  assert.equal(store.findActiveApiKeyByHash("test-sha256-hash")?.id, apiKey.id);
+  assert.equal(store.findActiveApiKeyByHash("test-sha256-hash")?.id, apiKey.id);\n  assert.ok(new Date(apiKey.expiresAt).getTime() - Date.now() > 3 * 60 * 60 * 1000);\n  assert.ok(new Date(apiKey.expiresAt).getTime() - Date.now() <= 4 * 60 * 60 * 1000);
 
   const attempt = store.createAttempt({
     userId: user.id,
