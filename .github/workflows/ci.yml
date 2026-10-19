@@ -75,6 +75,18 @@ jobs:
           curl --fail --silent http://127.0.0.1:3000/api/v1/quizzes \
             -H "X-IIA-API-Key: $API_KEY" >/tmp/iia-v1-quizzes.json
           grep -q 'Frontend Fundamentals' /tmp/iia-v1-quizzes.json
+          ROTATE_RESPONSE=$(curl --fail --silent -X POST "http://127.0.0.1:3000/api/developer/keys/$API_KEY_ID/rotate" \
+            -H "authorization: Bearer $TOKEN")
+          ROTATED_KEY=$(printf '%s' "$ROTATE_RESPONSE" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>process.stdout.write(JSON.parse(s).key || ""))')
+          ROTATED_KEY_ID=$(printf '%s' "$ROTATE_RESPONSE" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>process.stdout.write(JSON.parse(s).apiKey.id || ""))')
+          test -n "$ROTATED_KEY"
+          OLD_KEY_STATUS=$(curl --silent --show-error -o /tmp/iia-old-key.json -w "%{http_code}" \
+            http://127.0.0.1:3000/api/v1/quizzes -H "X-IIA-API-Key: $API_KEY")
+          test "$OLD_KEY_STATUS" = "401"
+          API_KEY="$ROTATED_KEY"
+          API_KEY_ID="$ROTATED_KEY_ID"
+          curl --fail --silent http://127.0.0.1:3000/api/v1/quizzes \
+            -H "X-IIA-API-Key: $API_KEY" >/tmp/iia-v1-rotated-quizzes.json
           INVALID_KEY_STATUS=$(curl --silent --show-error -o /tmp/iia-invalid-key.json -w "%{http_code}" \
             -X POST http://127.0.0.1:3000/api/v1/chat -H 'content-type: application/json' \
             --data '{"message":"this should be blocked"}')
