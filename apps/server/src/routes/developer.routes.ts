@@ -15,6 +15,7 @@ const keyCreationLimiter = rateLimit({
 router.use(requireAuth);
 router.get("/keys", listDeveloperApiKeys);
 router.post("/keys", keyCreationLimiter, createDeveloperApiKey);
-router.post("/keys/:id/rotate", keyCreationLimiter, rotateDeveloperApiKey);\nrouter.delete("/keys/:id", revokeDeveloperApiKey);
+router.post("/keys/:id/rotate", keyCreationLimiter, rotateDeveloperApiKey);
+router.delete("/keys/:id", revokeDeveloperApiKey);
 
 export default router;
