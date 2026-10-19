@@ -16,7 +16,7 @@ const apiLimiter = rateLimit({
 router.get("/docs", (_req, res) => res.json({
   name: "Integrated Intelligence Agent API",
   version: "1.0.0",
-  authentication: { header: "X-IIA-API-Key", createKey: "POST /api/developer/keys" },
+  authentication: { header: "X-IIA-API-Key", createKey: "POST /api/developer/keys", rotateKey: "POST /api/developer/keys/:id/rotate", keyLifetimeHours: 4 },
   endpoints: [
     { method: "GET", path: "/api/v1/health", authentication: "none", description: "API health check" },
     { method: "POST", path: "/api/v1/chat", authentication: "API key", body: { message: "string", taskMode: "boolean (optional)" }, description: "Ask IIA a question or request a multi-step answer" },
