@@ -25,7 +25,9 @@ test("application records survive reloading the store module", (t) => {
     prefix: "iia_live_test",
   });
   assert.equal(store.listApiKeysForUser(user.id)[0].keyHash, undefined);
-  assert.equal(store.findActiveApiKeyByHash("test-sha256-hash")?.id, apiKey.id);\n  assert.ok(new Date(apiKey.expiresAt).getTime() - Date.now() > 3 * 60 * 60 * 1000);\n  assert.ok(new Date(apiKey.expiresAt).getTime() - Date.now() <= 4 * 60 * 60 * 1000);
+  assert.equal(store.findActiveApiKeyByHash("test-sha256-hash")?.id, apiKey.id);
+  assert.ok(new Date(apiKey.expiresAt).getTime() - Date.now() > 3 * 60 * 60 * 1000);
+  assert.ok(new Date(apiKey.expiresAt).getTime() - Date.now() <= 4 * 60 * 60 * 1000);
 
   const attempt = store.createAttempt({
     userId: user.id,
@@ -56,8 +58,13 @@ test("application records survive reloading the store module", (t) => {
   assert.equal(reloaded.listApiKeysForUser(user.id)[0]?.id, apiKey.id);
   assert.equal(reloaded.findActiveApiKeyByHash("test-sha256-hash")?.id, apiKey.id);
   assert.equal(reloaded.revokeApiKeyForUser(apiKey.id, "another-user"), false);
-  assert.equal(reloaded.revokeApiKeyForUser(apiKey.id, user.id), true);
+  const rotated = reloaded.rotateApiKeyForUser(apiKey.id, user.id, { keyHash: "rotated-sha256-hash", prefix: "iia_live_rotated" });
+  assert.ok(rotated);
+  assert.notEqual(rotated.id, apiKey.id);
   assert.equal(reloaded.findActiveApiKeyByHash("test-sha256-hash"), undefined);
+  assert.equal(reloaded.findActiveApiKeyByHash("rotated-sha256-hash")?.id, rotated.id);
+  assert.equal(reloaded.revokeApiKeyForUser(rotated.id, user.id), true);
+  assert.equal(reloaded.findActiveApiKeyByHash("rotated-sha256-hash"), undefined);
 
   delete require.cache[modulePath];
   delete process.env.DATA_FILE;
