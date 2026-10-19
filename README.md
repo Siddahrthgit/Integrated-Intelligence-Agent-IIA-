@@ -19,6 +19,7 @@ The API is served by the IIA backend; it is a project-owned interface, while the
 | DELETE | `/api/developer/keys/:id` | User JWT | Revoke one of your keys |
 | POST | `/api/v1/chat` | IIA API key | Ask a question |
 | GET | `/api/v1/quizzes` | IIA API key | List quizzes visible to the key owner |
+| POST | `/api/v1/quizzes/generate` | IIA API key | Generate a quiz from a PDF already uploaded to your account |
 
 ### Create an API key
 
