@@ -61,6 +61,30 @@ jobs:
             -H "authorization: Bearer $TOKEN" >/tmp/iia-me.json
           grep -q 'ci-user@example.test' /tmp/iia-me.json
 
+          curl --fail --silent http://127.0.0.1:3000/api/v1/health >/tmp/iia-v1-health.json
+          grep -q '"version":"1.0.0"' /tmp/iia-v1-health.json
+          curl --fail --silent http://127.0.0.1:3000/api/v1/docs >/tmp/iia-v1-docs.json
+          grep -q '/api/v1/chat' /tmp/iia-v1-docs.json
+
+          API_KEY_RESPONSE=$(curl --fail --silent -X POST http://127.0.0.1:3000/api/developer/keys \
+            -H "authorization: Bearer $TOKEN" -H 'content-type: application/json' \
+            --data '{"name":"CI integration"}')
+          API_KEY=$(printf '%s' "$API_KEY_RESPONSE" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>process.stdout.write(JSON.parse(s).key || ""))')
+          API_KEY_ID=$(printf '%s' "$API_KEY_RESPONSE" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>process.stdout.write(JSON.parse(s).apiKey.id || ""))')
+          test "${API_KEY#iia_live_}" != "$API_KEY"
+          curl --fail --silent http://127.0.0.1:3000/api/v1/quizzes \
+            -H "X-IIA-API-Key: $API_KEY" >/tmp/iia-v1-quizzes.json
+          grep -q 'Frontend Fundamentals' /tmp/iia-v1-quizzes.json
+          INVALID_KEY_STATUS=$(curl --silent --show-error -o /tmp/iia-invalid-key.json -w "%{http_code}" \
+            -X POST http://127.0.0.1:3000/api/v1/chat -H 'content-type: application/json' \
+            --data '{"message":"this should be blocked"}')
+          test "$INVALID_KEY_STATUS" = "401"
+          curl --fail --silent -X DELETE "http://127.0.0.1:3000/api/developer/keys/$API_KEY_ID" \
+            -H "authorization: Bearer $TOKEN" -o /dev/null
+          REVOKED_KEY_STATUS=$(curl --silent --show-error -o /tmp/iia-revoked-key.json -w "%{http_code}" \
+            http://127.0.0.1:3000/api/v1/quizzes -H "X-IIA-API-Key: $API_KEY")
+          test "$REVOKED_KEY_STATUS" = "401"
+
           NO_KEY_CHAT_STATUS=$(curl --silent --show-error -o /tmp/iia-no-key-chat.json -w "%{http_code}" \
             -X POST http://127.0.0.1:3000/api/chat \
             -H "authorization: Bearer $TOKEN" -H 'content-type: application/json' \

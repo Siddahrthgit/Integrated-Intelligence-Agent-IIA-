@@ -14,7 +14,7 @@ export type UploadedDocument = {
   id: string; filename: string; originalName: string; mimeType: string; size: number;
   url: string; uploadedAt: string; extractedText?: string; pages?: DocumentPage[]; ownerUserId?: string;
 };
-type StoreSnapshot = { users: User[]; quizzes: Quiz[]; attempts: Attempt[]; uploadedDocuments: UploadedDocument[] };
+export type IIAApiKey = { id: string; ownerUserId: string; name: string; keyHash: string; prefix: string; createdAt: string; lastUsedAt?: string; revokedAt?: string };\ntype StoreSnapshot = { users: User[]; quizzes: Quiz[]; attempts: Attempt[]; uploadedDocuments: UploadedDocument[]; apiKeys: IIAApiKey[] };
 
 const seed: StoreSnapshot = {
   users: [{
@@ -44,7 +44,7 @@ function loadSnapshot(): StoreSnapshot {
         !Array.isArray(parsed.attempts) || !Array.isArray(parsed.uploadedDocuments)) {
       throw new Error("Persisted store has an invalid shape");
     }
-    const snapshot = parsed as StoreSnapshot;
+    const snapshot = parsed as StoreSnapshot;\n    // Migrate older store files that predate developer API keys.\n    if (!Array.isArray(snapshot.apiKeys)) snapshot.apiKeys = [];
     // Keep the public sample quiz available even when an older persistent store
     // was created before the sample quiz was seeded.
     if (!snapshot.quizzes.some((quiz) => quiz.id === "quiz_1")) {
@@ -93,4 +93,28 @@ export function createUploadedDocument(data: {
 export function getUploadedDocumentById(id: string) { return uploadedDocuments.find((document) => document.id === id); }
 export function getUploadedDocumentByIdForUser(id: string, userId: string) {
   return uploadedDocuments.find((document) => document.id === id && document.ownerUserId === userId);
+}
+
+export function createApiKey(data: { ownerUserId: string; name: string; keyHash: string; prefix: string }) {
+  const key: IIAApiKey = { id: randomUUID(), ownerUserId: data.ownerUserId, name: data.name.trim().slice(0, 80), keyHash: data.keyHash, prefix: data.prefix, createdAt: new Date().toISOString() };
+  apiKeys.unshift(key);
+  saveStore();
+  return key;
+}
+export function listApiKeysForUser(ownerUserId: string) {
+  return apiKeys.filter((key) => key.ownerUserId === ownerUserId).map(({ keyHash: _secret, ...key }) => key);
+}
+export function revokeApiKeyForUser(id: string, ownerUserId: string) {
+  const key = apiKeys.find((item) => item.id === id && item.ownerUserId === ownerUserId);
+  if (!key || key.revokedAt) return false;
+  key.revokedAt = new Date().toISOString();
+  saveStore();
+  return true;
+}
+export function findActiveApiKeyByHash(keyHash: string) {
+  const key = apiKeys.find((item) => item.keyHash === keyHash && !item.revokedAt);
+  if (!key) return undefined;
+  key.lastUsedAt = new Date().toISOString();
+  saveStore();
+  return key;
 }
