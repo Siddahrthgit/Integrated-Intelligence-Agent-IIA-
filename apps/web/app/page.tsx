@@ -50,10 +50,8 @@ export default function HomePage() {
   const [document, setDocument] = useState<UploadedDocument | null>(null);
   const [chatMessage, setChatMessage] = useState('');
   const [chatAnswer, setChatAnswer] = useState('');
-  const [webSearch, setWebSearch] = useState(false);
   const [taskMode, setTaskMode] = useState(false);
   const [taskSteps, setTaskSteps] = useState<{ title: string; completed: boolean }[]>([]);
-  const [webSources, setWebSources] = useState<{ url: string; title: string }[]>([]);
   const [isChatting, setIsChatting] = useState(false);
   const [chatError, setChatError] = useState('');
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -126,7 +124,6 @@ export default function HomePage() {
     setAuthUser(null);
     setDocument(null);
     setChatAnswer('');
-    setWebSources([]);
     setTaskSteps([]);
     setChatError('');
   };
@@ -186,12 +183,11 @@ export default function HomePage() {
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'content-type': 'application/json', authorization: `Bearer ${token}` },
-        body: JSON.stringify({ message, ...(document ? { documentId: document.id } : {}), webSearch, taskMode }),
+        body: JSON.stringify({ message, ...(document ? { documentId: document.id } : {}), taskMode }),
       });
       const payload = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(payload.message || 'IIA could not answer right now.');
       setChatAnswer(typeof payload.answer === 'string' ? payload.answer : 'IIA returned an empty response.');
-      setWebSources(Array.isArray(payload.webSearch?.sources) ? payload.webSearch.sources : []);
       setTaskSteps(Array.isArray(payload.taskMode?.steps) ? payload.taskMode.steps : []);
     } catch (chatFailure) {
       setChatError(chatFailure instanceof Error ? chatFailure.message : 'IIA could not answer right now.');
@@ -284,7 +280,6 @@ export default function HomePage() {
               <h2>IIA's response</h2>
               {taskSteps.length ? <div className="iia-task-steps"><h4>Task steps completed</h4><ol>{taskSteps.map((step, index) => <li key={`${index}-${step.title}`}>{step.title}</li>)}</ol></div> : null}
               <p className="iia-answer-text">{chatAnswer}</p>
-              {webSources.length ? <div className="iia-web-sources"><h4>Web sources</h4><ul>{webSources.map((source) => <li key={source.url}><a href={source.url} target="_blank" rel="noopener noreferrer">{source.title}</a></li>)}</ul></div> : null}
             </div>
           ) : null}
 
@@ -312,10 +307,6 @@ export default function HomePage() {
             <label className="iia-web-search-toggle">
               <input type="checkbox" checked={taskMode} onChange={(event) => setTaskMode(event.target.checked)} disabled={!token || isChatting} />
               Multi-step task mode
-            </label>
-            <label className="iia-web-search-toggle">
-              <input type="checkbox" checked={webSearch} onChange={(event) => setWebSearch(event.target.checked)} disabled={!token || isChatting} />
-              Search the web for this answer
             </label>
             {document ? (
               <div className="iia-chat-file" role="status">
