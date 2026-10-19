@@ -44,6 +44,19 @@ curl -X POST "https://YOUR-IIA-HOST/api/v1/chat" \
 
 For multi-step analysis, set `"taskMode": true`. The normal chat response includes an `answer`, `model`, and `provider`; multi-step mode also includes task steps. PDF-based API questions currently use the website's authenticated upload workflow rather than accepting arbitrary file URLs.
 
+### Generate a quiz from an uploaded PDF
+
+Upload the PDF through the existing authenticated upload endpoint, then pass its returned `documentId`:
+
+```bash
+curl -X POST "https://YOUR-IIA-HOST/api/v1/quizzes/generate" \
+  -H "X-IIA-API-Key: iia_live_YOUR_SECRET_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"documentId":"YOUR_UPLOADED_DOCUMENT_ID","questionCount":10}'
+```
+
+Only PDFs belonging to the API key owner's account can be used. Question count is bounded to 3–20.
+
 ### List quizzes
 
 ```bash
