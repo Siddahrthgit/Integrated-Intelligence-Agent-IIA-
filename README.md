@@ -16,7 +16,8 @@ The API is served by the IIA backend; it is a project-owned interface, while the
 | GET | `/api/v1/docs` | None | Machine-readable API overview |
 | POST | `/api/developer/keys` | User JWT | Create an API key |
 | GET | `/api/developer/keys` | User JWT | List your keys (secret values are never returned) |
-| POST | `/api/developer/keys/:id/rotate` | User JWT | Replace a key and revoke the previous key |\n| DELETE | `/api/developer/keys/:id` | User JWT | Revoke one of your keys |
+| POST | `/api/developer/keys/:id/rotate` | User JWT | Replace a key and revoke the previous key |
+| DELETE | `/api/developer/keys/:id` | User JWT | Revoke one of your keys |
 | POST | `/api/v1/chat` | IIA API key | Ask a question |
 | GET | `/api/v1/quizzes` | IIA API key | List quizzes visible to the key owner |
 | POST | `/api/v1/quizzes/generate` | IIA API key | Generate a quiz from a PDF already uploaded to your account |
@@ -34,7 +35,18 @@ curl -X POST "https://YOUR-IIA-HOST/api/developer/keys" \
 
 The response contains `key` once and it expires after **4 hours**. Copy it to a secure secret store; IIA persists only its SHA-256 hash. The full secret cannot be retrieved later. Use the rotation endpoint with your signed-in user token before expiry; rotation immediately revokes the previous key and returns a replacement valid for another 4 hours. The replacement secret is shown only once.
 
-### Rotate an API key every four hours\n\nYour API key is valid for four hours. Use the user session JWT to rotate it before expiry; schedule this call in your integration at around 3 hours 50 minutes, then securely replace the stored key with the returned `key`. Do not use the API key itself to rotate keys.\n\n```bash\ncurl -X POST "https://YOUR-IIA-HOST/api/developer/keys/YOUR_KEY_ID/rotate" \\\n  -H "Authorization: Bearer YOUR_USER_TOKEN"\n```\n\nThe rotation endpoint returns the new key once and revokes the old key. The account owner must re-authenticate when their user JWT expires (currently 7 days).\n\n### Ask IIA a question
+### Rotate an API key every four hours
+
+Your API key is valid for four hours. Use the user session JWT to rotate it before expiry; schedule this call in your integration at around 3 hours 50 minutes, then securely replace the stored key with the returned `key`. Do not use the API key itself to rotate keys.
+
+```bash
+curl -X POST "https://YOUR-IIA-HOST/api/developer/keys/YOUR_KEY_ID/rotate" \\
+  -H "Authorization: Bearer YOUR_USER_TOKEN"
+```
+
+The rotation endpoint returns the new key once and revokes the old key. The account owner must re-authenticate when their user JWT expires (currently 7 days).
+
+### Ask IIA a question
 
 ```bash
 curl -X POST "https://YOUR-IIA-HOST/api/v1/chat" \
