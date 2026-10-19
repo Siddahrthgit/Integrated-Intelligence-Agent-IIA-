@@ -15,6 +15,7 @@ export const createDeveloperApiKey = (req: Request, res: Response) => {
   if (!userId) return res.status(401).json({ message: "Sign in to create an API key." });
   const name = typeof req.body?.name === "string" ? req.body.name.trim() : "";
   if (!name || name.length > 80) return res.status(400).json({ message: "API key name must be between 1 and 80 characters." });
+  if (listApiKeysForUser(userId).filter((key) => !key.revokedAt).length >= 10) return res.status(409).json({ message: "You already have 10 active API keys. Revoke an unused key before creating another." });
   const rawKey = "iia_live_" + randomBytes(32).toString("base64url");
   const record = createApiKey({
     ownerUserId: userId,
