@@ -18,6 +18,15 @@ test("application records survive reloading the store module", (t) => {
     email: "persist@example.test",
     password: "hashed-password",
   });
+  const apiKey = store.createApiKey({
+    ownerUserId: user.id,
+    name: "Persistence API key",
+    keyHash: "test-sha256-hash",
+    prefix: "iia_live_test",
+  });
+  assert.equal(store.listApiKeysForUser(user.id)[0].keyHash, undefined);
+  assert.equal(store.findActiveApiKeyByHash("test-sha256-hash")?.id, apiKey.id);
+
   const attempt = store.createAttempt({
     userId: user.id,
     quizId: "quiz_1",
@@ -44,6 +53,11 @@ test("application records survive reloading the store module", (t) => {
   assert.equal(reloaded.getUploadedDocumentById(document.id)?.ownerUserId, user.id);
   assert.equal(reloaded.getUploadedDocumentByIdForUser(document.id, user.id)?.id, document.id);
   assert.equal(reloaded.getUploadedDocumentByIdForUser(document.id, "another-user"), undefined);
+  assert.equal(reloaded.listApiKeysForUser(user.id)[0]?.id, apiKey.id);
+  assert.equal(reloaded.findActiveApiKeyByHash("test-sha256-hash")?.id, apiKey.id);
+  assert.equal(reloaded.revokeApiKeyForUser(apiKey.id, "another-user"), false);
+  assert.equal(reloaded.revokeApiKeyForUser(apiKey.id, user.id), true);
+  assert.equal(reloaded.findActiveApiKeyByHash("test-sha256-hash"), undefined);
 
   delete require.cache[modulePath];
   delete process.env.DATA_FILE;
