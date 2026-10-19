@@ -158,8 +158,7 @@ export default function HomePage() {
 
       setDocument(payload as UploadedDocument);
       setChatAnswer('');
-      setWebSources([]);
-      setTaskSteps([]);
+        setTaskSteps([]);
       setChatError('');
     } catch (uploadError) {
       setError(uploadError instanceof Error ? uploadError.message : 'Upload failed. Please try again.');
@@ -177,7 +176,6 @@ export default function HomePage() {
     setIsChatting(true);
     setChatError('');
     setChatAnswer('');
-    setWebSources([]);
     setTaskSteps([]);
     try {
       const response = await fetch('/api/chat', {
@@ -304,7 +302,7 @@ export default function HomePage() {
               placeholder={document ? `Ask a question about ${document.originalName}…` : 'Ask anything…'}
               required
             />
-            <label className="iia-web-search-toggle">
+            <label className="iia-option-toggle">
               <input type="checkbox" checked={taskMode} onChange={(event) => setTaskMode(event.target.checked)} disabled={!token || isChatting} />
               Multi-step task mode
             </label>
