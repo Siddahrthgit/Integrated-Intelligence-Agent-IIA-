@@ -56,7 +56,7 @@ curl "https://YOUR-IIA-HOST/api/v1/quizzes" \
 - Send API keys only in the `X-IIA-API-Key` header over HTTPS. Never put keys in URLs, browser source code, public repositories, or client-side apps.
 - Keys are scoped to the account that created them; revocation takes effect on the next request.
 - Stored API key material contains only a SHA-256 hash and a short prefix, not the full secret.
-- The versioned API has a default limit of 60 requests per 15 minutes per client IP. Developer key creation is limited to 10 per hour per account/IP.
+- The versioned API has a default limit of 60 requests per 15 minutes per client IP. Developer key creation is limited to 10 per hour per client IP.
 - Chat uses the server's `GEMINI_API_KEY`. Never expose that provider key to API consumers.
 - API key records are persisted alongside the current JSON store. For production-scale multi-instance usage, migrate to a transactional database and shared rate-limit storage before broad public release.
 - Website search is intentionally not part of IIA v1.
