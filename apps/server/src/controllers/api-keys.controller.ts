@@ -1,4 +1,4 @@
-import { createHash, randomBytes, randomUUID } from "node:crypto";
+import { createHash, randomBytes } from "node:crypto";
 import { Request, Response } from "express";
 import { createApiKey, listApiKeysForUser, revokeApiKeyForUser } from "../data/store";
 
