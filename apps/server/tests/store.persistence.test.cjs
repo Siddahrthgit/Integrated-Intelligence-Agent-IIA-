@@ -58,6 +58,9 @@ test("application records survive reloading the store module", (t) => {
   assert.equal(reloaded.listApiKeysForUser(user.id)[0]?.id, apiKey.id);
   assert.equal(reloaded.findActiveApiKeyByHash("test-sha256-hash")?.id, apiKey.id);
   assert.equal(reloaded.revokeApiKeyForUser(apiKey.id, "another-user"), false);
+  const expiringKey = reloaded.apiKeys.find((item) => item.id === apiKey.id);
+  expiringKey.expiresAt = new Date(Date.now() - 1000).toISOString();
+  assert.equal(reloaded.findActiveApiKeyByHash("test-sha256-hash"), undefined);
   const rotated = reloaded.rotateApiKeyForUser(apiKey.id, user.id, { keyHash: "rotated-sha256-hash", prefix: "iia_live_rotated" });
   assert.ok(rotated);
   assert.notEqual(rotated.id, apiKey.id);
