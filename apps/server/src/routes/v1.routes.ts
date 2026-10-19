@@ -10,7 +10,6 @@ const apiLimiter = rateLimit({
   limit: 60,
   standardHeaders: "draft-8",
   legacyHeaders: false,
-  keyGenerator: (req) => req.header("x-iia-api-key") || req.ip || "unknown",
   message: { error: { code: "rate_limit_exceeded", message: "IIA API rate limit reached. Retry after the rate limit window." } },
 });
 
