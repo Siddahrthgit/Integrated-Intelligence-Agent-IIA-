@@ -12,7 +12,7 @@ export default function InteractionHealthMonitor() {
   const activated = useRef(false);
   const checking = useRef(false);
   const lastHealthy = useRef(true);
-  const hideTimer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
+  const hideTimer = useRef<number | null>(null);
 
   const checkHealth = useCallback(async () => {
     if (checking.current || document.visibilityState === 'hidden') return;
