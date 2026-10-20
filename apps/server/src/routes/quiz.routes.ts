@@ -8,6 +8,6 @@ const router = Router();
 router.get("/", optionalAuth, listQuizzes);
 router.post("/generate", requireAuth, requirePaidAccess, generateQuiz);
 router.get("/:id", optionalAuth, getQuizById);
-router.post("/:id/submit", requireAuth, submitQuiz);
+router.post("/:id/submit", requireAuth, requirePaidAccess, submitQuiz);
 
 export default router;
