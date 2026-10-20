@@ -89,7 +89,7 @@ curl "https://YOUR-IIA-HOST/api/v1/quizzes" \
 
 ## Configuration
 
-Set secrets on the server environment, not in source control. Production requires a unique `JWT_SECRET` of at least 32 bytes. Chat and AI quiz generation require `GEMINI_API_KEY`; `GEMINI_MODEL` may override the default model.
+Set secrets on the server environment, not in source control. Production requires a unique `JWT_SECRET` of at least 32 bytes. Chat and AI quiz generation require `GEMINI_API_KEY`. The default text model is `gemini-3.8-flash`; set `GEMINI_MODEL` to choose a preferred model. If a model is unavailable, rate-limited, or returns a retryable provider error, IIA tries a bounded fallback list (`gemini-3.8-flash`, `gemini-3.5-flash-lite`, and `gemini-3.1-flash-lite`). Set `GEMINI_FALLBACK_MODELS` to a comma-separated list of models enabled for your Google AI Studio project to override/add preferred fallback choices. The configured preferred model is attempted first. Invalid credentials and malformed requests are not retried across models. A fallback cannot bypass account-wide quota, billing, regional, or API-key restrictions; confirm model access for the exact server key before production rollout.
 
 ## Validation
 
