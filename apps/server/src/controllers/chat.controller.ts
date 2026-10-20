@@ -162,7 +162,8 @@ async function runMultiStepTask(endpoint: string, apiKey: string, prompt: string
     true,
   );
   const steps = parseBoundedPlan(planResponse.text);
-  const results: { step: string; result: string; model: string }[] = [{ step: "Plan", result: planResponse.text, model: planResponse.model }];
+  const results: { step: string; result: string; model: string }[] = [];
+  const modelsUsed = [planResponse.model];
   for (const step of steps) {
     const stepResponse = await callGeminiText(
       endpoint,
@@ -172,6 +173,7 @@ async function runMultiStepTask(endpoint: string, apiKey: string, prompt: string
       false,
     );
     results.push({ step, result: stepResponse.text, model: stepResponse.model });
+    modelsUsed.push(stepResponse.model);
   }
   const synthesis = await callGeminiText(
     endpoint,
@@ -182,7 +184,7 @@ async function runMultiStepTask(endpoint: string, apiKey: string, prompt: string
   return {
     answer: synthesis.text,
     model: synthesis.model,
-    modelsUsed: [...new Set([...results.map((item) => item.model), synthesis.model])],
+    modelsUsed: [...new Set([...modelsUsed, synthesis.model])],
     steps: results.slice(1).map((item) => ({ title: item.step, completed: true })),
   };
 }
