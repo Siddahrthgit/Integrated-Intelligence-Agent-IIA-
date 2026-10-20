@@ -17,6 +17,8 @@ const suggestions = [
   'Give me interview preparation topics and practice questions…',
 ];
 
+const instagramUrl = process.env.NEXT_PUBLIC_IIA_INSTAGRAM_URL;
+
 type AuthUser = { id: string; name: string; email: string };
 
 type UploadedDocument = {
@@ -245,6 +247,7 @@ export default function HomePage() {
         <p className="iia-kicker">IIA study workspace</p>
         <a className="iia-business-link" href="/business">For businesses: explore the IIA Business Assistant <span aria-hidden="true">↗</span></a>
         <a className="iia-business-link" href="/pricing">Study Plus plans and payment <span aria-hidden="true">↗</span></a>
+        {instagramUrl ? <a className="iia-business-link" href={instagramUrl} target="_blank" rel="noreferrer">Contact IIA on Instagram <span aria-hidden="true">↗</span></a> : null}
         <h1>Study smarter with your own material.</h1>
         <p className="iia-subtitle">
           Upload a PDF, review the document details, and continue into the study workflow already supported by the app.
