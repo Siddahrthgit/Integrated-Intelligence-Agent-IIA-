@@ -12,12 +12,13 @@ export default function InteractionHealthMonitor() {
   const activated = useRef(false);
   const checking = useRef(false);
   const lastHealthy = useRef(true);
-  const hideTimer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
+  const hideTimer = useRef<number | null>(null);
 
   const checkHealth = useCallback(async () => {
     if (checking.current || document.visibilityState === 'hidden') return;
     checking.current = true;
     setState('checking');
+    setMessage('Checking the IIA connection…');
 
     try {
       let healthy = false;
@@ -118,7 +119,7 @@ export default function InteractionHealthMonitor() {
         padding: '12px 16px',
         borderRadius: 12,
         border: '1px solid rgba(255,255,255,.18)',
-        background: state === 'offline' ? '#7f1d1d' : '#14532d',
+        background: state === 'offline' ? '#7f1d1d' : state === 'checking' ? '#334155' : '#14532d',
         color: '#fff',
         boxShadow: '0 8px 30px rgba(0,0,0,.2)',
         fontSize: 14,
