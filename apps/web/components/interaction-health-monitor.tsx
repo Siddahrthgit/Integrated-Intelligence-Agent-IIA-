@@ -79,12 +79,25 @@ export default function InteractionHealthMonitor() {
     window.addEventListener('focusin', activate, { passive: true });
     window.addEventListener('pointerdown', activate, { passive: true, once: true });
     window.addEventListener('keydown', activate, { passive: true, once: true });
+    const onOffline = () => {
+      lastHealthy.current = false;
+      setState('offline');
+      setMessage('Your device appears offline. Your text remains on this page; IIA will check again when the connection returns.');
+    };
+    const onOnline = () => {
+      if (activated.current) void checkHealth();
+    };
+
+    window.addEventListener('online', onOnline);
+    window.addEventListener('offline', onOffline);
     document.addEventListener('visibilitychange', onVisibility);
     return () => {
       window.removeEventListener('focusin', activate);
       window.removeEventListener('pointerdown', activate);
       window.removeEventListener('keydown', activate);
       document.removeEventListener('visibilitychange', onVisibility);
+      window.removeEventListener('online', onOnline);
+      window.removeEventListener('offline', onOffline);
       if (hideTimer.current) window.clearTimeout(hideTimer.current);
     };
   }, [checkHealth]);
@@ -112,7 +125,26 @@ export default function InteractionHealthMonitor() {
         lineHeight: 1.45,
       }}
     >
-      {message}
+      <div>{message}</div>
+      {state === 'offline' && (
+        <button
+          type="button"
+          onClick={() => void checkHealth()}
+          style={{
+            marginTop: 8,
+            padding: '7px 11px',
+            borderRadius: 8,
+            border: '1px solid rgba(255,255,255,.65)',
+            background: 'transparent',
+            color: '#fff',
+            font: 'inherit',
+            fontWeight: 600,
+            cursor: 'pointer',
+          }}
+        >
+          Retry connection
+        </button>
+      )}
     </div>
   );
 }
