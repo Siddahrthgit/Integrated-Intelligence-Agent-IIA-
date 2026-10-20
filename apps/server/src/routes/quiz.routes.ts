@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { listQuizzes, getQuizById, submitQuiz, generateQuiz } from "../controllers/quiz.controller";
 import { optionalAuth, requireAuth } from "../middleware/auth.middleware";
+import { requirePaidAccess } from "../middleware/paid-access.middleware";
 
 const router = Router();
 
