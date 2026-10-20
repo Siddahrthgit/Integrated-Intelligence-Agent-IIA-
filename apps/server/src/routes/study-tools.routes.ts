@@ -2,6 +2,7 @@ import { Router } from "express";
 import rateLimit from "express-rate-limit";
 import { analyzeStudyText } from "../controllers/study-tools.controller";
 import { requireAuth } from "../middleware/auth.middleware";
+import { requirePaidAccess } from "../middleware/paid-access.middleware";
 
 const router = Router();
 const analyzeLimiter = rateLimit({
@@ -12,5 +13,5 @@ const analyzeLimiter = rateLimit({
   message: { message: "Study analysis limit reached. Please wait before trying again." },
 });
 
-router.post("/analyze", requireAuth, analyzeLimiter, analyzeStudyText);
+router.post("/analyze", requireAuth, requirePaidAccess, analyzeLimiter, analyzeStudyText);
 export default router;
