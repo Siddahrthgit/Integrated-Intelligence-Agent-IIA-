@@ -46,6 +46,8 @@ export default function HomePage() {
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [isGeneratingExam, setIsGeneratingExam] = useState(false);
+  const [examError, setExamError] = useState('');
   const [error, setError] = useState('');
   const [document, setDocument] = useState<UploadedDocument | null>(null);
   const [chatMessage, setChatMessage] = useState('');
@@ -165,6 +167,28 @@ export default function HomePage() {
       setDocument(null);
     } finally {
       setIsUploading(false);
+    }
+  };
+
+  const handleGenerateExam = async () => {
+    if (!token || !document || isGeneratingExam) return;
+    setIsGeneratingExam(true);
+    setExamError('');
+    try {
+      const response = await fetch('/api/quiz/generate', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', authorization: `Bearer ${token}` },
+        body: JSON.stringify({ documentId: document.id, questionCount: 10 }),
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok || !payload.quiz?.id) {
+        throw new Error(payload.message || 'IIA could not build an exam from this PDF.');
+      }
+      window.location.assign(`/quiz/${encodeURIComponent(payload.quiz.id)}`);
+    } catch (failure) {
+      setExamError(failure instanceof Error ? failure.message : 'Exam generation failed. Try a text-based PDF.');
+    } finally {
+      setIsGeneratingExam(false);
     }
   };
 
@@ -354,6 +378,13 @@ export default function HomePage() {
                 <dd>{new Date(document.uploadedAt).toLocaleString()}</dd>
               </div>
             </dl>
+            <div className="iia-exam-actions">
+              <button type="button" className="iia-upload-button" onClick={handleGenerateExam} disabled={isGeneratingExam || isUploading || !token}>
+                {isGeneratingExam ? 'Building your exam…' : 'Build exam from this PDF'}
+              </button>
+              <p>Creates 10 multiple-choice questions with answers and explanations from the text extracted from this PDF.</p>
+              {examError ? <p className="iia-status iia-status-error" role="alert">{examError}</p> : null}
+            </div>
           </div>
         ) : null}
 
