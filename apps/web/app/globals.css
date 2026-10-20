@@ -802,3 +802,27 @@ input {
   .iia-ask-workspace .iia-suggestion { font-size: 1.4rem; }
   .iia-ask-form .iia-chat-input-actions { flex-direction: column; }
 }
+
+/* Business service entry point */
+.iia-business-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 0 16px;
+  padding: 9px 13px;
+  border: 1px solid rgba(139, 168, 255, 0.35);
+  border-radius: 999px;
+  color: #dce5ff;
+  background: rgba(87, 112, 185, 0.13);
+  font-size: 0.82rem;
+  font-weight: 650;
+  text-decoration: none;
+  transition: background 150ms ease, border-color 150ms ease;
+}
+.iia-business-link:hover {
+  background: rgba(87, 112, 185, 0.24);
+  border-color: rgba(139, 168, 255, 0.65);
+}
+.iia-business-link:focus-visible { outline: 2px solid #a9c0ff; outline-offset: 3px; }
