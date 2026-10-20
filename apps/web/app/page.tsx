@@ -244,6 +244,7 @@ export default function HomePage() {
       <section className="iia-hero" aria-label="Integrated Intelligence Agent home screen">
         <p className="iia-kicker">IIA study workspace</p>
         <a className="iia-business-link" href="/business">For businesses: explore the IIA Business Assistant <span aria-hidden="true">↗</span></a>
+        <a className="iia-business-link" href="/pricing">Study Plus plans and payment <span aria-hidden="true">↗</span></a>
         <h1>Study smarter with your own material.</h1>
         <p className="iia-subtitle">
           Upload a PDF, review the document details, and continue into the study workflow already supported by the app.
