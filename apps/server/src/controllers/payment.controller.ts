@@ -4,7 +4,6 @@ import {
   attachPaymentPidx,
   createPaymentOrder,
   getPaymentOrderById,
-  getPaymentOrderByPidx,
   getActiveSubscription,
   markPaymentOrderPaid,
   users,
@@ -32,7 +31,7 @@ export async function initiateKhaltiPayment(req: Request, res: Response) {
   const userId = (req as Request & { user?: { id?: string } }).user?.id;
   if (!userId) return res.status(401).json({ message: "Sign in before purchasing access." });
   const planId = typeof req.body?.planId === "string" ? req.body.planId as PlanId : "";
-  if (!(planId in plans)) return res.status(400).json({ message: "Choose a valid IIA access plan." });
+  if (planId !== "student-monthly" && planId !== "student-annual") return res.status(400).json({ message: "Choose a valid IIA access plan." });
   const secret = process.env.KHALTI_SECRET_KEY;
   if (!secret) return res.status(503).json({ message: "Online payments are not enabled yet. Please contact IIA on Instagram while payment setup is completed." });
   if (!process.env.PUBLIC_APP_URL) {
