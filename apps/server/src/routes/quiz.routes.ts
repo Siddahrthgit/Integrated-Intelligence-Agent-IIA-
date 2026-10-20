@@ -5,7 +5,7 @@ import { optionalAuth, requireAuth } from "../middleware/auth.middleware";
 const router = Router();
 
 router.get("/", optionalAuth, listQuizzes);
-router.post("/generate", requireAuth, generateQuiz);
+router.post("/generate", requireAuth, requirePaidAccess, generateQuiz);
 router.get("/:id", optionalAuth, getQuizById);
 router.post("/:id/submit", requireAuth, submitQuiz);
 
