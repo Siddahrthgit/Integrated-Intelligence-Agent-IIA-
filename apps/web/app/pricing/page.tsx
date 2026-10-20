@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
+const instagramUrl = process.env.NEXT_PUBLIC_IIA_INSTAGRAM_URL;
+
 type Plan = { id: 'student-monthly' | 'student-annual'; name: string; price: string; duration: string; description: string; features: string[] };
 
 const plans: Plan[] = [
@@ -94,7 +96,10 @@ export default function PricingPage() {
           ))}
         </section>
         <p style={{ textAlign: 'center', color: '#6b7280', lineHeight: 1.6, maxWidth: 760, margin: '26px auto 0' }}>Payments are verified server-to-server before paid access is activated. Keep your account credentials private. If you paid but the status is pending, do not pay again immediately; contact IIA support and include your payment reference.</p>
-        <footer style={{ marginTop: 48, borderTop: '1px solid #e5e7eb', paddingTop: 22, textAlign: 'center', color: '#6b7280' }}>Integrated Intelligence Agent · Study with human judgment and verify important answers.</footer>
+        <footer style={{ marginTop: 48, borderTop: '1px solid #e5e7eb', paddingTop: 22, textAlign: 'center', color: '#6b7280' }}>
+          Integrated Intelligence Agent · Study with human judgment and verify important answers.
+          {instagramUrl ? <a href={instagramUrl} target="_blank" rel="noreferrer" style={{ display: 'inline-block', marginLeft: 10, color: '#312e81' }}>Contact IIA on Instagram</a> : <span style={{ display: 'block', marginTop: 8 }}>Instagram support link will be available once the public IIA profile URL is configured.</span>}
+        </footer>
       </div>
     </main>
   );
