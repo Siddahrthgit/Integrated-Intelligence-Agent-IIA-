@@ -2,6 +2,7 @@ import { Router } from "express";
 import rateLimit from "express-rate-limit";
 import { chatWithIIA } from "../controllers/chat.controller";
 import { requireAuth } from "../middleware/auth.middleware";
+import { requirePaidAccess } from "../middleware/paid-access.middleware";
 
 const router = Router();
 const chatLimiter = rateLimit({
@@ -25,6 +26,6 @@ const limitTaskMode = (req: import("express").Request, res: import("express").Re
   return next();
 };
 
-router.post("/", requireAuth, chatLimiter, limitTaskMode, chatWithIIA);
+router.post("/", requireAuth, requirePaidAccess, chatLimiter, limitTaskMode, chatWithIIA);
 
 export default router;
