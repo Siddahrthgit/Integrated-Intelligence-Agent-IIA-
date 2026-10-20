@@ -24,7 +24,7 @@ export function getPaymentStatus(req: Request, res: Response) {
   const userId = (req as Request & { user?: { id?: string } }).user?.id;
   if (!userId) return res.status(401).json({ message: "Sign in to check your plan." });
   const subscription = getActiveSubscription(userId);
-  return res.json({ subscription, paymentConfigured: Boolean(process.env.KHALTI_SECRET_KEY) });
+  return res.json({ subscription, paymentConfigured: Boolean(process.env.KHALTI_SECRET_KEY && process.env.PUBLIC_APP_URL) });
 }
 
 export async function initiateKhaltiPayment(req: Request, res: Response) {
