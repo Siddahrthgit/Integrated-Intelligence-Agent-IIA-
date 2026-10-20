@@ -12,6 +12,7 @@ import chatRoutes from "./routes/chat.routes";
 import studyToolsRoutes from "./routes/study-tools.routes";
 import developerRoutes from "./routes/developer.routes";
 import v1Routes from "./routes/v1.routes";
+import paymentRoutes from "./routes/payment.routes";
 
 dotenv.config();
 
@@ -32,6 +33,7 @@ if (!isProduction && process.env.CORS_ORIGIN) {
 }
 app.use(express.json({ limit: "1mb" }));
 app.use("/api/auth", authRoutes);
+app.use("/api/payments", paymentRoutes);
 app.use("/api/quiz", quizRoutes);
 app.use("/api/results", resultRoutes);
 app.use("/api/uploads", uploadRoutes);

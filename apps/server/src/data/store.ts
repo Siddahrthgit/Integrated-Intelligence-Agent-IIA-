@@ -11,11 +11,13 @@ export type UploadedDocument = {
   id: string; filename: string; originalName: string; mimeType: string; size: number;
   url: string; uploadedAt: string; extractedText?: string; pages?: DocumentPage[]; ownerUserId?: string;
 };
+export type PaymentOrder = { id: string; userId: string; planId: string; amountPaisa: number; pidx?: string; status: "pending" | "paid" | "failed"; createdAt: string; paidAt?: string; transactionId?: string };
+export type Subscription = { userId: string; planId: string; startsAt: string; expiresAt: string; paymentOrderId: string };
 export type IIAApiKey = {
   id: string; ownerUserId: string; name: string; keyHash: string; prefix: string;
   createdAt: string; expiresAt: string; lastUsedAt?: string; revokedAt?: string;
 };
-type StoreSnapshot = { users: User[]; quizzes: Quiz[]; attempts: Attempt[]; uploadedDocuments: UploadedDocument[]; apiKeys: IIAApiKey[] };
+type StoreSnapshot = { users: User[]; quizzes: Quiz[]; attempts: Attempt[]; uploadedDocuments: UploadedDocument[]; apiKeys: IIAApiKey[]; paymentOrders?: PaymentOrder[]; subscriptions?: Subscription[] };
 
 const seed: StoreSnapshot = {
   users: [{ id: "user_1", name: "Demo User", email: "demo@example.com", password: "$2a$10$7J6s1XVH2d9QhJXlYh07vO3QcNfQ5l9zPkCz7H0CDJk4GJ0mdOgLe" }],
@@ -30,7 +32,7 @@ function persist(snapshot: StoreSnapshot) {
   fs.writeFileSync(temporaryFile, JSON.stringify(snapshot, null, 2), { mode: 0o600 });
   fs.renameSync(temporaryFile, dataFile);
 }
-function saveStore() { persist({ users, quizzes, attempts, uploadedDocuments, apiKeys }); }
+function saveStore() { persist({ users, quizzes, attempts, uploadedDocuments, apiKeys, paymentOrders, subscriptions }); }
 function loadSnapshot(): StoreSnapshot {
   ensureDataDirectory();
   if (!fs.existsSync(dataFile)) { persist(seed); return structuredClone(seed); }
@@ -42,6 +44,8 @@ function loadSnapshot(): StoreSnapshot {
     }
     const snapshot = parsed as StoreSnapshot;
     if (!Array.isArray(snapshot.apiKeys)) snapshot.apiKeys = [];
+    if (!Array.isArray(snapshot.paymentOrders)) snapshot.paymentOrders = [];
+    if (!Array.isArray(snapshot.subscriptions)) snapshot.subscriptions = [];
     // Older API keys without expiry are assigned a four-hour lifetime from creation.
     snapshot.apiKeys = snapshot.apiKeys.map((key) => ({
       ...key,
@@ -60,6 +64,8 @@ export const quizzes: Quiz[] = initial.quizzes;
 export const attempts: Attempt[] = initial.attempts;
 export const uploadedDocuments: UploadedDocument[] = initial.uploadedDocuments;
 export const apiKeys: IIAApiKey[] = initial.apiKeys;
+export const paymentOrders: PaymentOrder[] = initial.paymentOrders || [];
+export const subscriptions: Subscription[] = initial.subscriptions || [];
 
 export function findUserByEmail(email: string) {
   const normalizedEmail = email.trim().toLowerCase();
@@ -112,4 +118,35 @@ export function findActiveApiKeyByHash(keyHash: string) {
   const key = apiKeys.find((item) => item.keyHash === keyHash && !item.revokedAt && new Date(item.expiresAt).getTime() > now);
   if (!key) return undefined;
   key.lastUsedAt = new Date().toISOString(); saveStore(); return key;
+}
+
+export function createPaymentOrder(data: { id: string; userId: string; planId: string; amountPaisa: number }) {
+  const order: PaymentOrder = { ...data, status: "pending", createdAt: new Date().toISOString() };
+  paymentOrders.unshift(order); saveStore(); return order;
+}
+export function getPaymentOrderById(id: string) { return paymentOrders.find((order) => order.id === id); }
+export function getPaymentOrderByPidx(pidx: string) { return paymentOrders.find((order) => order.pidx === pidx); }
+export function attachPaymentPidx(orderId: string, pidx: string) {
+  const order = getPaymentOrderById(orderId);
+  if (!order || order.status !== "pending") return false;
+  order.pidx = pidx; saveStore(); return true;
+}
+export function markPaymentOrderPaid(orderId: string, transactionId: string) {
+  const order = getPaymentOrderById(orderId);
+  if (!order) return false;
+  if (order.status === "paid") return true;
+  order.status = "paid"; order.paidAt = new Date().toISOString(); order.transactionId = transactionId;
+  const now = new Date();
+  const existing = subscriptions.find((item) => item.userId === order.userId && new Date(item.expiresAt).getTime() > now.getTime());
+  const startsAt = existing ? existing.expiresAt : now.toISOString();
+  const days = order.planId === "student-annual" ? 365 : 30;
+  const expiresAt = new Date(new Date(startsAt).getTime() + days * 24 * 60 * 60 * 1000).toISOString();
+  const subscription: Subscription = { userId: order.userId, planId: order.planId, startsAt, expiresAt, paymentOrderId: order.id };
+  if (existing) Object.assign(existing, subscription);
+  else subscriptions.unshift(subscription);
+  saveStore(); return true;
+}
+export function getActiveSubscription(userId: string) {
+  const now = Date.now();
+  return subscriptions.find((item) => item.userId === userId && new Date(item.expiresAt).getTime() > now) || null;
 }

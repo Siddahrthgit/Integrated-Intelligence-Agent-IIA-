@@ -3,6 +3,7 @@ import rateLimit from "express-rate-limit";
 import { chatWithIIA } from "../controllers/chat.controller";
 import { generateQuiz, listQuizzes } from "../controllers/quiz.controller";
 import { requireIIAApiKey } from "../middleware/api-key.middleware";
+import { requirePaidAccess } from "../middleware/paid-access.middleware";
 
 const router = Router();
 const apiLimiter = rateLimit({
@@ -28,6 +29,7 @@ router.get("/docs", (_req, res) => res.json({
 router.get("/health", (_req, res) => res.json({ ok: true, name: "Integrated Intelligence Agent API", version: "1.0.0" }));
 router.use(apiLimiter);
 router.use(requireIIAApiKey);
+router.use(requirePaidAccess);
 router.post("/chat", (req, res, next) => {
   if (typeof req.body?.message !== "string") return res.status(400).json({ error: { code: "invalid_request", message: "The message field must be a string." } });
   return next();

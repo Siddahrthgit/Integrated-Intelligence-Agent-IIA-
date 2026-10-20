@@ -91,6 +91,19 @@ curl "https://YOUR-IIA-HOST/api/v1/quizzes" \
 
 Set secrets on the server environment, not in source control. Production requires a unique `JWT_SECRET` of at least 32 bytes. Chat and AI quiz generation require `GEMINI_API_KEY`. The default text model is `gemini-3.8-flash`; set `GEMINI_MODEL` to choose a preferred model. If a model is unavailable, rate-limited, or returns a retryable provider error, IIA tries a bounded fallback list (`gemini-3.8-flash`, `gemini-3.5-flash-lite`, and `gemini-3.1-flash-lite`). Set `GEMINI_FALLBACK_MODELS` to a comma-separated list of models enabled for your Google AI Studio project to override/add preferred fallback choices. The configured preferred model is attempted first. Invalid credentials and malformed requests are not retried across models. A fallback cannot bypass account-wide quota, billing, regional, or API-key restrictions; confirm model access for the exact server key before production rollout.
 
+## Student access and Khalti payments
+
+The website includes an IIA Study Plus checkout page at `/pricing`:
+- 30-day access: NPR 499
+- 365-day access: NPR 4,999
+- Payments use Khalti ePayment and are verified by the server using Khalti's lookup endpoint before a subscription is activated. These are one-time payments; plans do not auto-renew.
+- Configure `KHALTI_SECRET_KEY`, `KHALTI_ENV` (`sandbox` or `production`), and `PUBLIC_APP_URL` in the server environment. Keep the secret key out of source control and client-side code.
+- Configure `NEXT_PUBLIC_IIA_INSTAGRAM_URL` at frontend build time with the exact public IIA Instagram profile URL for support/contact links.
+- `IIA_REQUIRE_PAID_ACCESS` defaults to `false` so existing users are not unexpectedly blocked. Set it to `true` only after testing successful, canceled, pending, and invalid payment callbacks against the correct Khalti merchant environment. When enabled, website chat, PDF upload, exam generation, study analysis, and the developer API require an active subscription.
+- Payment credentials and live merchant access are not in this repository. Until the merchant secret and public return URL are configured, checkout intentionally reports that it is unavailable; it does not pretend that a payment succeeded.
+
+The current subscription record is stored in the existing JSON data store for compatibility. Before scaling payments to multiple backend instances, migrate orders and subscriptions to a transactional database and add operational reconciliation/refund workflows.
+
 ## Validation
 
 CI runs backend build/tests, frontend build, Docker build, and API smoke tests on pull requests. Do not merge or deploy unless those checks pass.

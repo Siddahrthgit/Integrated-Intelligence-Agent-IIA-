@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import styles from './page.module.css';
 
+const instagramUrl = process.env.NEXT_PUBLIC_IIA_INSTAGRAM_URL;
+
 const packages = [
   {
     name: 'Paid pilot',
@@ -38,7 +40,7 @@ export default function BusinessAssistantPage() {
           <span className={styles.brandMark}>II</span>
           <span>Integrated Intelligence Agent</span>
         </Link>
-        <Link className={styles.navLink} href="/">Open IIA <span aria-hidden="true">↗</span></Link>
+        <div className={styles.actions}><Link className={styles.navLink} href="/pricing">Study plans</Link><Link className={styles.navLink} href="/">Open IIA <span aria-hidden="true">↗</span></Link></div>
       </header>
 
       <section className={styles.hero}>
@@ -126,6 +128,18 @@ export default function BusinessAssistantPage() {
           <p><span>✓</span> Test results reviewed before launch</p>
           <Link className={styles.primaryButton} href="/">Open IIA to explore the current app <span aria-hidden="true">↗</span></Link>
           <p className={styles.note}>This page describes a proposed service offer. Availability depends on technical readiness and an agreed scope; it does not imply that a pilot has been booked.</p>
+        </div>
+      </section>
+
+      <section className={styles.pilotSection} id="contact">
+        <div>
+          <p className={styles.eyebrow}>Contact IIA</p>
+          <h2>Talk to us on Instagram.</h2>
+          <p>Ask about a business pilot, pricing, or the right first use case. Please do not send passwords, API keys, or confidential customer documents through social media.</p>
+        </div>
+        <div className={styles.pilotChecklist}>
+          {instagramUrl ? <a className={styles.primaryButton} href={instagramUrl} target="_blank" rel="noreferrer">Message IIA on Instagram <span aria-hidden="true">↗</span></a> : <p className={styles.note}>Instagram is the preferred contact channel. Configure the public IIA Instagram profile URL to activate this button.</p>}
+          <Link className={styles.secondaryButton} href="/pricing">View IIA Study Plus plans</Link>
         </div>
       </section>
 

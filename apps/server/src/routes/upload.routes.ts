@@ -6,6 +6,7 @@ import multer from "multer";
 import rateLimit from "express-rate-limit";
 import { uploadDocument } from "../controllers/upload.controller";
 import { requireAuth } from "../middleware/auth.middleware";
+import { requirePaidAccess } from "../middleware/paid-access.middleware";
 
 const uploadsDir = path.resolve(process.env.UPLOADS_DIR || path.join(process.cwd(), "uploads"));
 fs.mkdirSync(uploadsDir, { recursive: true });
@@ -45,6 +46,6 @@ const upload = multer({
 });
 
 const router = Router();
-router.post("/", requireAuth, uploadLimiter, upload.single("file"), uploadDocument);
+router.post("/", requireAuth, requirePaidAccess, uploadLimiter, upload.single("file"), uploadDocument);
 
 export default router;

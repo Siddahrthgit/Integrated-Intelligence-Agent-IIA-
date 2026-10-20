@@ -17,6 +17,8 @@ const suggestions = [
   'Give me interview preparation topics and practice questions…',
 ];
 
+const instagramUrl = process.env.NEXT_PUBLIC_IIA_INSTAGRAM_URL;
+
 type AuthUser = { id: string; name: string; email: string };
 
 type UploadedDocument = {
@@ -46,6 +48,8 @@ export default function HomePage() {
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [isGeneratingExam, setIsGeneratingExam] = useState(false);
+  const [examError, setExamError] = useState('');
   const [error, setError] = useState('');
   const [document, setDocument] = useState<UploadedDocument | null>(null);
   const [chatMessage, setChatMessage] = useState('');
@@ -168,6 +172,28 @@ export default function HomePage() {
     }
   };
 
+  const handleGenerateExam = async () => {
+    if (!token || !document || isGeneratingExam) return;
+    setIsGeneratingExam(true);
+    setExamError('');
+    try {
+      const response = await fetch('/api/quiz/generate', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', authorization: `Bearer ${token}` },
+        body: JSON.stringify({ documentId: document.id, questionCount: 10 }),
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok || !payload.quiz?.id) {
+        throw new Error(payload.message || 'IIA could not build an exam from this PDF.');
+      }
+      window.location.assign(`/quiz/${encodeURIComponent(payload.quiz.id)}`);
+    } catch (failure) {
+      setExamError(failure instanceof Error ? failure.message : 'Exam generation failed. Try a text-based PDF.');
+    } finally {
+      setIsGeneratingExam(false);
+    }
+  };
+
   const handleChatSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const message = chatMessage.trim();
@@ -220,6 +246,8 @@ export default function HomePage() {
       <section className="iia-hero" aria-label="Integrated Intelligence Agent home screen">
         <p className="iia-kicker">IIA study workspace</p>
         <a className="iia-business-link" href="/business">For businesses: explore the IIA Business Assistant <span aria-hidden="true">↗</span></a>
+        <a className="iia-business-link" href="/pricing">Study Plus plans and payment <span aria-hidden="true">↗</span></a>
+        {instagramUrl ? <a className="iia-business-link" href={instagramUrl} target="_blank" rel="noreferrer">Contact IIA on Instagram <span aria-hidden="true">↗</span></a> : null}
         <h1>Study smarter with your own material.</h1>
         <p className="iia-subtitle">
           Upload a PDF, review the document details, and continue into the study workflow already supported by the app.
@@ -354,6 +382,13 @@ export default function HomePage() {
                 <dd>{new Date(document.uploadedAt).toLocaleString()}</dd>
               </div>
             </dl>
+            <div className="iia-exam-actions">
+              <button type="button" className="iia-upload-button" onClick={handleGenerateExam} disabled={isGeneratingExam || isUploading || !token}>
+                {isGeneratingExam ? 'Building your exam…' : 'Build exam from this PDF'}
+              </button>
+              <p>Creates 10 multiple-choice questions with answers and explanations from the text extracted from this PDF.</p>
+              {examError ? <p className="iia-status iia-status-error" role="alert">{examError}</p> : null}
+            </div>
           </div>
         ) : null}
 
