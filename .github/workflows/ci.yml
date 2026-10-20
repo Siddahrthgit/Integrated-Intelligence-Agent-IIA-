@@ -6,6 +6,7 @@ on:
     branches: ["**"]
 permissions:
   contents: read
+  packages: write
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -99,3 +100,17 @@ jobs:
           UNAUTH_UPLOAD_STATUS=$(curl --silent --show-error -o /tmp/iia-unauth-upload.json -w "%{http_code}" \
             -X POST http://127.0.0.1:3000/api/uploads)
           test "$UNAUTH_UPLOAD_STATUS" = "401"
+      - name: Publish tested image to private GitHub Container Registry
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GHCR_USER: ${{ github.actor }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
+          IMAGE="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/iia"
+          docker tag iia-ci "$IMAGE:sha-$IMAGE_TAG"
+          docker tag iia-ci "$IMAGE:latest"
+          docker push "$IMAGE:sha-$IMAGE_TAG"
+          docker push "$IMAGE:latest"
