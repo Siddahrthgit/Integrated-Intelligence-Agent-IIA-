@@ -24,7 +24,7 @@ export function getPaymentStatus(req: Request, res: Response) {
   const userId = (req as Request & { user?: { id?: string } }).user?.id;
   if (!userId) return res.status(401).json({ message: "Sign in to check your plan." });
   const subscription = getActiveSubscription(userId);
-  return res.json({ subscription, paymentConfigured: Boolean(process.env.KHALTI_SECRET_KEY && process.env.PUBLIC_APP_URL) });
+  return res.json({ subscription, paymentConfigured: Boolean(process.env.KHALTI_SECRET_KEY && process.env.PUBLIC_APP_URL && process.env.IIA_REQUIRE_PAID_ACCESS === "true") });
 }
 
 export async function initiateKhaltiPayment(req: Request, res: Response) {
@@ -32,6 +32,9 @@ export async function initiateKhaltiPayment(req: Request, res: Response) {
   if (!userId) return res.status(401).json({ message: "Sign in before purchasing access." });
   const planId = typeof req.body?.planId === "string" ? req.body.planId as PlanId : "";
   if (planId !== "student-monthly" && planId !== "student-annual") return res.status(400).json({ message: "Choose a valid IIA access plan." });
+  if (process.env.IIA_REQUIRE_PAID_ACCESS !== "true") {
+    return res.status(503).json({ message: "Checkout is disabled until paid-access enforcement has passed end-to-end testing." });
+  }
   const secret = process.env.KHALTI_SECRET_KEY;
   if (!secret) return res.status(503).json({ message: "Online payments are not enabled yet. Please contact IIA on Instagram while payment setup is completed." });
   if (!process.env.PUBLIC_APP_URL) {
