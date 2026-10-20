@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-type HealthState = 'idle' | 'checking' | 'healthy' | 'recovering' | 'offline';
+type HealthState = 'idle' | 'checking' | 'healthy' | 'offline';
 
 const RETRY_DELAYS = [0, 1000, 2500, 5000];
 
@@ -12,7 +12,7 @@ export default function InteractionHealthMonitor() {
   const activated = useRef(false);
   const checking = useRef(false);
   const lastHealthy = useRef(true);
-  const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hideTimer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
 
   const checkHealth = useCallback(async () => {
     if (checking.current || document.visibilityState === 'hidden') return;
