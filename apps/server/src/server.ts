@@ -26,6 +26,7 @@ if (!isProduction && !jwtSecret) process.env.JWT_SECRET = "dev-only-insecure-sec
 const app = express();
 const PORT = Number(process.env.PORT || 5000);
 const uploadsDir = path.resolve(process.env.UPLOADS_DIR || path.join(process.cwd(), "uploads"));
+const dataFile = path.resolve(process.env.DATA_FILE || path.join(process.cwd(), "data", "store.json"));
 fs.mkdirSync(uploadsDir, { recursive: true });
 
 if (!isProduction && process.env.CORS_ORIGIN) {
@@ -42,8 +43,32 @@ app.use("/api/study-tools", studyToolsRoutes);
 app.use("/api/developer", developerRoutes);
 app.use("/api/v1", v1Routes);
 
+// Liveness: confirms the process is responding. Does not imply AI or storage is ready.
 app.get("/api/health", (_req, res) => {
   res.json({ ok: true, message: "Smart Quiz API is running" });
+});
+
+// Readiness: safe for orchestrators/monitoring; reports dependency status without exposing secrets.
+app.get("/api/ready", (_req, res) => {
+  const checks = {
+    aiProviderConfigured: Boolean(process.env.GEMINI_API_KEY?.trim()),
+    uploadsWritable: false,
+    dataWritable: false,
+  };
+  try {
+    fs.accessSync(uploadsDir, fs.constants.W_OK);
+    checks.uploadsWritable = true;
+  } catch {
+    // Keep the failed check in the response; do not leak filesystem details.
+  }
+  try {
+    fs.accessSync(path.dirname(dataFile), fs.constants.W_OK);
+    checks.dataWritable = true;
+  } catch {
+    // Keep the failed check in the response; do not leak filesystem details.
+  }
+  const ok = Object.values(checks).every(Boolean);
+  res.status(ok ? 200 : 503).json({ ok, checks });
 });
 
 app.use((err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {

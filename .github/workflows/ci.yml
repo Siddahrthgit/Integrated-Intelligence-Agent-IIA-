@@ -49,6 +49,13 @@ jobs:
           done
           cat /tmp/iia-health.json
           grep -q '"ok":true' /tmp/iia-health.json
+
+          # The liveness endpoint may pass without AI credentials; readiness must not.
+          READY_STATUS=$(curl --silent --show-error -o /tmp/iia-ready.json -w "%{http_code}" http://127.0.0.1:3000/api/ready)
+          test "$READY_STATUS" = "503"
+          grep -q '"aiProviderConfigured":false' /tmp/iia-ready.json
+          grep -q '"uploadsWritable":true' /tmp/iia-ready.json
+          grep -q '"dataWritable":true' /tmp/iia-ready.json
           docker exec iia-ci sh -lc 'command -v pdftoppm && command -v tesseract'
           curl --fail --silent http://127.0.0.1:3000/ >/tmp/iia-home.html
           grep -q 'IIA study workspace' /tmp/iia-home.html
