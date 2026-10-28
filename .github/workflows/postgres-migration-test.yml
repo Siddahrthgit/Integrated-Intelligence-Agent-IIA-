@@ -54,3 +54,51 @@ jobs:
           test "$TABLE_COUNT" = "7"
           CONSTRAINT_COUNT=$(psql -Atqc "SELECT count(*) FROM pg_constraint WHERE conname IN ('quizzes_source_document_id_fkey','attempts_user_id_fkey','attempts_quiz_id_fkey','subscriptions_payment_order_id_fkey')")
           test "$CONSTRAINT_COUNT" -ge "4"
+      - name: Import synthetic JSON snapshot into disposable PostgreSQL and verify data
+        env:
+          DATABASE_URL: postgresql://iia_test:iia_test_password@127.0.0.1:5432/iia_test
+          PGHOST: 127.0.0.1
+          PGPORT: 5432
+          PGUSER: iia_test
+          PGPASSWORD: iia_test_password
+          PGDATABASE: iia_test
+        run: |
+          set -euo pipefail
+          cat > /tmp/iia-import-fixture.json <<'JSON'
+          {
+            "users": [
+              {"id":"u-test","name":"Synthetic Test","email":"synthetic@example.test","password":"test-hash"}
+            ],
+            "quizzes": [
+              {"id":"q-test","title":"Synthetic Quiz","description":"integration fixture","questions":[{"id":"question-1","text":"Question?","options":["A","B"],"correctOptionIndex":0}],"ownerUserId":"u-test","createdAt":"2026-01-01T00:00:00.000Z"}
+            ],
+            "attempts": [
+              {"id":"a-test","userId":"u-test","quizId":"q-test","score":1,"totalQuestions":1,"percentage":100,"passed":true,"createdAt":"2026-01-02T00:00:00.000Z"}
+            ],
+            "uploadedDocuments": [],
+            "apiKeys": [
+              {"id":"key-test","ownerUserId":"u-test","name":"synthetic","keyHash":"synthetic-hash","prefix":"iia_test_","createdAt":"2026-01-01T00:00:00.000Z","expiresAt":"2027-01-01T00:00:00.000Z"}
+            ],
+            "paymentOrders": [
+              {"id":"payment-test","userId":"u-test","planId":"basic","amountPaisa":100,"status":"paid","createdAt":"2026-01-01T00:00:00.000Z","paidAt":"2026-01-01T00:01:00.000Z","transactionId":"synthetic-txn"}
+            ],
+            "subscriptions": [
+              {"userId":"u-test","planId":"basic","startsAt":"2026-01-01T00:01:00.000Z","expiresAt":"2027-01-01T00:01:00.000Z","paymentOrderId":"payment-test"}
+            ]
+          }
+          JSON
+          node scripts/import-json-to-postgres.cjs /tmp/iia-import-fixture.json --apply
+          test "$(psql -Atqc "SELECT count(*) FROM users WHERE id='u-test' AND password_hash='test-hash'")" = "1"
+          test "$(psql -Atqc "SELECT count(*) FROM quizzes WHERE id='q-test' AND jsonb_array_length(questions)=1")" = "1"
+          test "$(psql -Atqc "SELECT count(*) FROM attempts WHERE id='a-test' AND passed=true")" = "1"
+          test "$(psql -Atqc "SELECT count(*) FROM api_keys WHERE id='key-test' AND key_hash='synthetic-hash'")" = "1"
+          test "$(psql -Atqc "SELECT count(*) FROM payment_orders WHERE id='payment-test' AND status='paid'")" = "1"
+          test "$(psql -Atqc "SELECT count(*) FROM subscriptions WHERE user_id='u-test' AND payment_order_id='payment-test'")" = "1"
+          # A second import must fail safely because the destination is no longer empty.
+          if node scripts/import-json-to-postgres.cjs /tmp/iia-import-fixture.json --apply; then
+            echo "ERROR: importer unexpectedly accepted a non-empty target" >&2
+            exit 1
+          fi
+          test "$(psql -Atqc "SELECT count(*) FROM users")" = "1"
+          test "$(psql -Atqc "SELECT count(*) FROM quizzes")" = "1"
+          echo "PASS: synthetic import, field preservation, and non-empty-target guard verified."
