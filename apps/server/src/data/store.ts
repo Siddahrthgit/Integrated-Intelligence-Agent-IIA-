@@ -117,7 +117,16 @@ export function findActiveApiKeyByHash(keyHash: string) {
   const now = Date.now();
   const key = apiKeys.find((item) => item.keyHash === keyHash && !item.revokedAt && new Date(item.expiresAt).getTime() > now);
   if (!key) return undefined;
-  key.lastUsedAt = new Date().toISOString(); saveStore(); return key;
+
+  // API keys can be checked on every request. Persist usage at most once every
+  // five minutes per key so authentication does not rewrite the entire JSON
+  // database for every API call.
+  const lastUsedAt = key.lastUsedAt ? Date.parse(key.lastUsedAt) : 0;
+  if (!Number.isFinite(lastUsedAt) || now - lastUsedAt >= 5 * 60 * 1000) {
+    key.lastUsedAt = new Date(now).toISOString();
+    saveStore();
+  }
+  return key;
 }
 
 export function createPaymentOrder(data: { id: string; userId: string; planId: string; amountPaisa: number }) {
