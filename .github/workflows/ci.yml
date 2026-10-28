@@ -24,6 +24,8 @@ jobs:
         run: npm --workspace @smart-quiz/server run test
       - name: Build frontend
         run: npm --workspace @smart-quiz/web run build
+      - name: Check load-test script syntax
+        run: node --check scripts/load-test-readonly.cjs
       - name: Build single-container image
         run: docker build -t iia-ci .
       - name: Smoke-test container and API proxy
