@@ -15,6 +15,10 @@ function isObject(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
 
+function isTimestamp(value) {
+  return typeof value === "string" && value.length > 0 && Number.isFinite(Date.parse(value));
+}
+
 function validateSnapshot(snapshot) {
   const errors = [];
   const warnings = [];
@@ -52,7 +56,7 @@ function validateSnapshot(snapshot) {
       if (emails.has(email)) errors.push("users contains duplicate normalized email addresses");
       emails.add(email);
     }
-    if (typeof user.name !== "string" || typeof user.password !== "string" || !user.password) {
+    if (typeof user.name !== "string" || !user.name.trim() || typeof user.password !== "string" || !user.password) {
       errors.push("users[" + i + "] is missing name or stored password hash");
     }
   }
@@ -63,39 +67,58 @@ function validateSnapshot(snapshot) {
   };
 
   for (const [i, quiz] of snapshot.quizzes.entries()) {
-    if (typeof quiz.title !== "string") errors.push("quizzes[" + i + "] has no title");
+    if (typeof quiz.title !== "string" || !quiz.title.trim()) errors.push("quizzes[" + i + "] has no title");
+    if (typeof quiz.description !== "string") errors.push("quizzes[" + i + "] has invalid description");
     if (!Array.isArray(quiz.questions)) errors.push("quizzes[" + i + "].questions must be an array");
+    if (quiz.createdAt !== undefined && quiz.createdAt !== null && !isTimestamp(quiz.createdAt)) errors.push("quizzes[" + i + "] has invalid createdAt timestamp");
     ref("users", quiz.ownerUserId, "quiz owner", true);
     ref("uploadedDocuments", quiz.sourceDocumentId, "quiz source document", true);
   }
   for (const [i, row] of snapshot.attempts.entries()) {
     ref("users", row.userId, "attempt user");
     ref("quizzes", row.quizId, "attempt quiz");
-    if (!Number.isFinite(row.score) || !Number.isFinite(row.totalQuestions) || !Number.isFinite(row.percentage)) errors.push("attempts[" + i + "] has invalid score fields");
+    if (!Number.isInteger(row.score) || !Number.isInteger(row.totalQuestions) || row.totalQuestions < 0 ||
+        !Number.isFinite(row.percentage) || row.percentage < 0 || row.percentage > 100 ||
+        typeof row.passed !== "boolean") errors.push("attempts[" + i + "] has invalid score fields");
+    if (!isTimestamp(row.createdAt)) errors.push("attempts[" + i + "] has invalid createdAt timestamp");
   }
   for (const [i, row] of snapshot.uploadedDocuments.entries()) {
     if (typeof row.filename !== "string" || typeof row.originalName !== "string" || typeof row.mimeType !== "string") errors.push("uploadedDocuments[" + i + "] has invalid file metadata");
-    if (!Number.isFinite(row.size) || row.size < 0) errors.push("uploadedDocuments[" + i + "] has invalid size");
+    if (!Number.isInteger(row.size) || row.size < 0) errors.push("uploadedDocuments[" + i + "] has invalid size");
+    if (!isTimestamp(row.uploadedAt)) errors.push("uploadedDocuments[" + i + "] has invalid uploadedAt timestamp");
     if (row.ownerUserId) ref("users", row.ownerUserId, "document owner");
     if (typeof row.url !== "string" || !row.url) warnings.push("some document URLs may need mapping to private object-storage keys");
+    else warnings.push("uploaded document URLs require an explicit storage mapping; the preflight does not verify file bytes");
   }
   for (const [i, row] of snapshot.apiKeys.entries()) {
     ref("users", row.ownerUserId, "API key owner");
     if (typeof row.keyHash !== "string" || !row.keyHash) errors.push("apiKeys[" + i + "] has no stored key hash");
+    if (typeof row.name !== "string" || !row.name.trim() || typeof row.prefix !== "string" || !row.prefix) errors.push("apiKeys[" + i + "] has invalid metadata");
+    if (!isTimestamp(row.createdAt) || !isTimestamp(row.expiresAt)) errors.push("apiKeys[" + i + "] has invalid timestamp");
+    if (row.lastUsedAt && !isTimestamp(row.lastUsedAt)) errors.push("apiKeys[" + i + "] has invalid lastUsedAt timestamp");
+    if (row.revokedAt && !isTimestamp(row.revokedAt)) errors.push("apiKeys[" + i + "] has invalid revokedAt timestamp");
   }
   const pidxs = new Set();
   for (const [i, row] of snapshot.paymentOrders.entries()) {
     ref("users", row.userId, "payment order user");
     if (!["pending", "paid", "failed"].includes(row.status)) errors.push("paymentOrders[" + i + "] has an unsupported status");
+    if (typeof row.planId !== "string" || !row.planId || !Number.isInteger(row.amountPaisa) || row.amountPaisa < 0) errors.push("paymentOrders[" + i + "] has invalid plan or amount");
+    if (!isTimestamp(row.createdAt)) errors.push("paymentOrders[" + i + "] has invalid createdAt timestamp");
+    if (row.paidAt && !isTimestamp(row.paidAt)) errors.push("paymentOrders[" + i + "] has invalid paidAt timestamp");
     if (row.pidx) {
       if (pidxs.has(row.pidx)) errors.push("paymentOrders contains duplicate payment provider references");
       pidxs.add(row.pidx);
     }
   }
   const subscriptionUsers = new Set();
-  for (const row of snapshot.subscriptions) {
+  for (const [i, row] of snapshot.subscriptions.entries()) {
     ref("users", row.userId, "subscription user");
     ref("paymentOrders", row.paymentOrderId, "subscription payment order");
+    if (typeof row.planId !== "string" || !row.planId || !isTimestamp(row.startsAt) || !isTimestamp(row.expiresAt)) {
+      errors.push("subscriptions[" + i + "] has invalid plan or timestamps");
+    } else if (Date.parse(row.expiresAt) <= Date.parse(row.startsAt)) {
+      errors.push("subscriptions[" + i + "] expiresAt must be later than startsAt");
+    }
     if (subscriptionUsers.has(row.userId)) errors.push("subscriptions contains more than one record for a user");
     subscriptionUsers.add(row.userId);
   }
