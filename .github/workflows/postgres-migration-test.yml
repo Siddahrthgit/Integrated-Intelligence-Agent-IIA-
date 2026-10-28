@@ -1,0 +1,56 @@
+name: PostgreSQL migration test
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+permissions:
+  contents: read
+jobs:
+  schema:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: iia_test
+          POSTGRES_PASSWORD: iia_test_password
+          POSTGRES_DB: iia_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U iia_test -d iia_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Wait for PostgreSQL
+        env:
+          PGPASSWORD: iia_test_password
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 30); do
+            if pg_isready -h 127.0.0.1 -p 5432 -U iia_test -d iia_test; then
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "PostgreSQL did not become ready" >&2
+          exit 1
+      - name: Apply schema twice and verify tables and foreign keys
+        env:
+          PGHOST: 127.0.0.1
+          PGPORT: 5432
+          PGUSER: iia_test
+          PGPASSWORD: iia_test_password
+          PGDATABASE: iia_test
+        run: |
+          set -euo pipefail
+          psql -v ON_ERROR_STOP=1 -f apps/server/migrations/001_initial_schema.sql
+          # Re-running must not fail or duplicate the baseline objects.
+          psql -v ON_ERROR_STOP=1 -f apps/server/migrations/001_initial_schema.sql
+          TABLE_COUNT=$(psql -Atqc "SELECT count(*) FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE' AND table_name IN ('users','quizzes','uploaded_documents','attempts','api_keys','payment_orders','subscriptions')")
+          test "$TABLE_COUNT" = "7"
+          CONSTRAINT_COUNT=$(psql -Atqc "SELECT count(*) FROM pg_constraint WHERE conname IN ('quizzes_source_document_id_fkey','attempts_user_id_fkey','attempts_quiz_id_fkey','subscriptions_payment_order_id_fkey')")
+          test "$CONSTRAINT_COUNT" -ge "4"
