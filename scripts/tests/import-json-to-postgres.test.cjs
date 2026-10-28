@@ -22,7 +22,7 @@ test("SQL preserves IDs and hashes, maps JSON and nullable timestamps", () => {
   assert.match(generated, /INSERT INTO users/);
   assert.match(generated, /'u''1'/);
   assert.match(generated, /'\$hash'/);
-  assert.match(generated, /'\[\{\\\"id\\\":/);
+  assert.ok(generated.includes("'[{\"id\":\"x\""));
   assert.match(generated, /INSERT INTO api_keys/);
   assert.match(generated, /INSERT INTO payment_orders/);
   assert.match(generated, /INSERT INTO subscriptions/);
