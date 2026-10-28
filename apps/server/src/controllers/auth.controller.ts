@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { findUserByEmail, createUser } from "../data/store";
+import { userRepository } from "../data/user-repository";
 
 const getJwtSecret = (): string => {
   const secret = process.env.JWT_SECRET;
@@ -22,13 +22,12 @@ export const signup = async (req: Request, res: Response) => {
     });
   }
 
-  if (findUserByEmail(email)) return res.status(409).json({ message: "An account with this email already exists." });
+  if (await userRepository.findByEmail(email)) return res.status(409).json({ message: "An account with this email already exists." });
 
   const hash = await bcrypt.hash(password, 10);
-  // Re-check after the asynchronous hash to reduce duplicate-account races.
-  if (findUserByEmail(email)) return res.status(409).json({ message: "An account with this email already exists." });
-
-  const user = createUser({ name, email, password: hash });
+  // The repository performs the final check-and-create atomically for its adapter.
+  const user = await userRepository.createIfEmailAvailable({ name, email, password: hash });
+  if (!user) return res.status(409).json({ message: "An account with this email already exists." });
   const token = jwt.sign({ id: user.id, name: user.name, email: user.email }, getJwtSecret(), { expiresIn: "7d" });
   return res.status(201).json({ token, user: { id: user.id, name: user.name, email: user.email } });
 };
@@ -40,7 +39,7 @@ export const login = async (req: Request, res: Response) => {
     return res.status(400).json({ message: "Provide a valid email and password." });
   }
 
-  const user = findUserByEmail(email);
+  const user = await userRepository.findByEmail(email);
   if (!user) return res.status(401).json({ message: "Invalid credentials" });
 
   const ok = await bcrypt.compare(password, user.password);
