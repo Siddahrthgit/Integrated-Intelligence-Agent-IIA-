@@ -18,3 +18,14 @@ This is a schema foundation, not a completed database migration. The running app
 8. Keep uploaded file bytes in private object storage or a shared durable volume. The `object_key` column is metadata only; this migration does not upload files.
 
 The schema deliberately uses text IDs to preserve the current application's IDs during migration. Legacy nullable quiz/document ownership is allowed; new write paths should require authenticated owners where appropriate.
+
+
+## Read-only JSON preflight
+
+Before building/running an importer, validate a protected copy of the existing JSON snapshot:
+
+```sh
+node scripts/preflight-json-migration.cjs /secure/path/store.json
+```
+
+The command only reads the file. It reports record counts, structural errors, duplicate normalized emails/IDs, and broken references without printing record values or secrets. It does not connect to PostgreSQL, upload document files, import data, or prove that all legacy values fit the target schema. Resolve every error and review every warning before writing an importer. Run it against a consistent snapshot, not a live file being modified by the app.
