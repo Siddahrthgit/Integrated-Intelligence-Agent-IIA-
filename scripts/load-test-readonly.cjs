@@ -91,7 +91,7 @@ function percentile(values, p) {
       p50: Number(percentile(latencies, 0.50).toFixed(1)),
       p95: Number(percentile(latencies, 0.95).toFixed(1)),
       p99: Number(percentile(latencies, 0.99).toFixed(1)),
-      max: Number(Math.max(0, ...latencies).toFixed(1)),
+      max: Number(latencies.reduce((maximum, value) => Math.max(maximum, value), 0).toFixed(1)),
     },
     statusCounts: Object.fromEntries(statusCounts),
     errorCount: errors.length,
