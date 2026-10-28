@@ -35,7 +35,15 @@ function persist(snapshot: StoreSnapshot) {
 function saveStore() { persist({ users, quizzes, attempts, uploadedDocuments, apiKeys, paymentOrders, subscriptions }); }
 function loadSnapshot(): StoreSnapshot {
   ensureDataDirectory();
-  if (!fs.existsSync(dataFile)) { persist(seed); return structuredClone(seed); }
+  if (!fs.existsSync(dataFile)) {
+    // Keep the sample account for local development only. A fresh production
+    // deployment must never create a pre-seeded account with a published hash.
+    const initialSeed = process.env.NODE_ENV === "production"
+      ? { ...seed, users: [] }
+      : seed;
+    persist(initialSeed);
+    return structuredClone(initialSeed);
+  }
   try {
     const parsed = JSON.parse(fs.readFileSync(dataFile, "utf8")) as Partial<StoreSnapshot>;
     if (!Array.isArray(parsed.users) || !Array.isArray(parsed.quizzes) ||
