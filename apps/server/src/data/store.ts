@@ -83,6 +83,12 @@ export function createUser(data: { name: string; email: string; password: string
   const user: User = { id: randomUUID(), name: data.name.trim(), email: data.email.trim().toLowerCase(), password: data.password };
   users.push(user); saveStore(); return user;
 }
+/** Atomically checks and creates within this single-process JSON adapter. */
+export function createUserIfEmailAvailable(data: { name: string; email: string; password: string }) {
+  const normalizedEmail = data.email.trim().toLowerCase();
+  if (users.some((user) => user.email.trim().toLowerCase() === normalizedEmail)) return undefined;
+  return createUser({ ...data, email: normalizedEmail });
+}
 export function getQuizById(id: string) { return quizzes.find((quiz) => quiz.id === id); }
 export function createQuiz(data: { title: string; description: string; questions: Question[]; ownerUserId: string; sourceDocumentId: string }) {
   const quiz: Quiz = { id: randomUUID(), title: data.title, description: data.description, questions: data.questions, ownerUserId: data.ownerUserId, sourceDocumentId: data.sourceDocumentId, createdAt: new Date().toISOString() };
