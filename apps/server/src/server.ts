@@ -48,25 +48,26 @@ app.get("/api/health", (_req, res) => {
   res.json({ ok: true, message: "Smart Quiz API is running" });
 });
 
+// Probe actual write access rather than relying on permission bits alone.
+function canWriteToDirectory(directory: string): boolean {
+  const probe = path.join(directory, `.iia-ready-${process.pid}-${Date.now()}-${Math.random().toString(16).slice(2)}`);
+  try {
+    fs.writeFileSync(probe, "", { flag: "wx", mode: 0o600 });
+    fs.unlinkSync(probe);
+    return true;
+  } catch {
+    try { fs.unlinkSync(probe); } catch { /* A failed probe may not have created a file. */ }
+    return false;
+  }
+}
+
 // Readiness: safe for orchestrators/monitoring; reports dependency status without exposing secrets.
 app.get("/api/ready", (_req, res) => {
   const checks = {
     aiProviderConfigured: Boolean(process.env.GEMINI_API_KEY?.trim()),
-    uploadsWritable: false,
-    dataWritable: false,
+    uploadsWritable: canWriteToDirectory(uploadsDir),
+    dataWritable: canWriteToDirectory(path.dirname(dataFile)),
   };
-  try {
-    fs.accessSync(uploadsDir, fs.constants.W_OK);
-    checks.uploadsWritable = true;
-  } catch {
-    // Keep the failed check in the response; do not leak filesystem details.
-  }
-  try {
-    fs.accessSync(path.dirname(dataFile), fs.constants.W_OK);
-    checks.dataWritable = true;
-  } catch {
-    // Keep the failed check in the response; do not leak filesystem details.
-  }
   const ok = Object.values(checks).every(Boolean);
   res.status(ok ? 200 : 503).json({ ok, checks });
 });
