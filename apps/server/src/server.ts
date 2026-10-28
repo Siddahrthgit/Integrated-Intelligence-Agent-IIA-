@@ -74,7 +74,13 @@ app.get("/api/ready", (_req, res) => {
 
 app.use((err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   const error = err instanceof Error ? err : new Error("Unexpected server error");
-  if (error.message === "Only PDF files are allowed" || error.name === "MulterError") {
+  // User-selected files with an unsupported extension/MIME are client errors,
+  // not server failures. Keep this aligned with upload.routes.ts fileFilter.
+  if (
+    error.message === "Only PDF files are allowed" ||
+    error.message === "Choose a PDF file with a .pdf extension." ||
+    error.name === "MulterError"
+  ) {
     return res.status(400).json({ message: error.message });
   }
   console.error(error);
