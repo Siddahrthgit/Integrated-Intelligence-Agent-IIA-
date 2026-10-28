@@ -67,7 +67,7 @@ jobs:
           cat > /tmp/iia-import-fixture.json <<'JSON'
           {
             "users": [
-              {"id":"u-test","name":"Synthetic Test","email":"synthetic@example.test","password":"$test-hash"}
+              {"id":"u-test","name":"Synthetic Test","email":"synthetic@example.test","password":"test-hash"}
             ],
             "quizzes": [
               {"id":"q-test","title":"Synthetic Quiz","description":"integration fixture","questions":[{"id":"question-1","text":"Question?","options":["A","B"],"correctOptionIndex":0}],"ownerUserId":"u-test","createdAt":"2026-01-01T00:00:00.000Z"}
@@ -88,7 +88,7 @@ jobs:
           }
           JSON
           node scripts/import-json-to-postgres.cjs /tmp/iia-import-fixture.json --apply
-          test "$(psql -Atqc "SELECT count(*) FROM users WHERE id='u-test' AND password_hash='$test-hash'")" = "1"
+          test "$(psql -Atqc "SELECT count(*) FROM users WHERE id='u-test' AND password_hash='test-hash'")" = "1"
           test "$(psql -Atqc "SELECT count(*) FROM quizzes WHERE id='q-test' AND jsonb_array_length(questions)=1")" = "1"
           test "$(psql -Atqc "SELECT count(*) FROM attempts WHERE id='a-test' AND passed=true")" = "1"
           test "$(psql -Atqc "SELECT count(*) FROM api_keys WHERE id='key-test' AND key_hash='synthetic-hash'")" = "1"
